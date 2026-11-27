@@ -1,0 +1,83 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Record Payment | FASTLINE INSTITUTE</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f6fb;margin:0;color:#17233b}
+main{max-width:1050px;margin:35px auto;padding:20px}
+.panel{background:white;padding:25px;border-radius:12px;box-shadow:0 4px 18px #10264a12;margin-bottom:20px}
+h1{color:#12358b}label{display:block;font-weight:bold;margin:14px 0 6px}
+input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:7px;box-sizing:border-box}
+button,.link{background:#12358b;color:white;padding:12px 18px;border:0;border-radius:7px;text-decoration:none;display:inline-block;margin-top:18px;cursor:pointer}
+.msg{padding:12px;background:#fff4d6;margin:10px 0;border-radius:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<div class="panel">
+<h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+<p><b>I SHALL RISE &amp; SHINE</b></p>
+<h2>Record Student Payment</h2>
+<p>Record money received and generate an official receipt.</p>
+{% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}
+
+<form method="get">
+<label>Select campus</label>
+<select name="campus" required onchange="this.form.submit()">
+<option value="">Choose campus</option>
+{% for campus in campuses %}
+<option value="{{ campus.pk }}" {% if selected_campus.pk == campus.pk %}selected{% endif %}>{{ campus.name }}</option>
+{% endfor %}
+</select>
+<noscript><button type="submit">Load Students</button></noscript>
+</form>
+
+{% if selected_campus %}
+<form method="post">
+{% csrf_token %}
+<input type="hidden" name="campus" value="{{ selected_campus.pk }}">
+<div class="grid">
+<div>
+<label>Student</label>
+<select name="student" required>
+<option value="">Choose student</option>
+{% for row in student_rows %}
+<option value="{{ row.student.pk }}">{{ row.student.registration_number }} — {{ row.student.user.get_full_name }} (Balance UGX {{ row.balance|floatformat:2 }})</option>
+{% endfor %}
+</select>
+</div>
+<div>
+<label>Amount received (UGX)</label>
+<input type="number" name="amount" min="0.01" step="0.01" required>
+</div>
+<div>
+<label>Payment method</label>
+<select name="method" required>
+<option value="">Choose method</option>
+{% for value,label in methods %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+</select>
+</div>
+<div>
+<label>Transaction reference (mobile money/bank)</label>
+<input name="transaction_reference" maxlength="100">
+</div>
+<div>
+<label>Notes</label>
+<input name="notes" maxlength="255">
+</div>
+</div>
+<button type="submit">Record Payment &amp; Generate Receipt</button>
+</form>
+{% else %}
+<p>Please select a campus to load students with outstanding fees.</p>
+{% endif %}
+</div>
+<div class="panel">
+<a class="link" href="{% url 'finance:deposits_register' %}">Open Deposits Register</a>
+<a class="link" href="{% url 'finance:fee_assignment' %}">Fee Assignment</a>
+</div>
+</main></body></html>

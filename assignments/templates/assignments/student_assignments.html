@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Assignments | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;font-family:Arial,sans-serif;color:#17243a}
+header{background:#142747;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-size:19px;font-weight:bold}
+.brand small{display:block;color:#d9ad50;font-size:11px;margin-top:5px}
+header a{color:white;text-decoration:none}
+.container{max-width:1100px;margin:35px auto;padding:0 20px}
+h1{margin-bottom:8px}
+.subtitle{color:#68758a;margin-bottom:25px}
+.assignment{background:white;border:1px solid #e4e9f0;border-radius:12px;padding:22px;margin-bottom:16px;box-shadow:0 3px 12px #1427470a}
+.assignment h2{font-size:19px;margin:0 0 8px}
+.muted{color:#718096;font-size:13px}
+.details{display:flex;gap:25px;flex-wrap:wrap;margin:16px 0}
+.badge{display:inline-block;padding:7px 11px;border-radius:20px;font-size:12px;font-weight:bold;background:#fff1d6;color:#8a5a00}
+.badge.done{background:#e1f5e9;color:#176b3b}
+.badge.late{background:#ffe5e5;color:#a32b2b}
+.btn{display:inline-block;background:#142747;color:white;text-decoration:none;padding:11px 18px;border-radius:7px;font-size:13px;font-weight:bold}
+.empty{background:white;padding:45px 20px;text-align:center;border-radius:12px;color:#718096}
+footer{text-align:center;padding:30px;color:#8792a3;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">FASTLINE <small>INSTITUTE OF HIGHER EDUCATION</small></div>
+<a href="/students/dashboard/">Back to Student Dashboard</a>
+</header>
+<div class="container">
+<h1>My Assignments</h1>
+<p class="subtitle">View your coursework, deadlines and submission status.</p>
+
+{% for assignment in assignments %}
+{% with submission=assignment.my_submissions|first %}
+<div class="assignment">
+<h2>{{ assignment.title }}</h2>
+<p class="muted">{{ assignment.course.course_code }} — {{ assignment.course.course_title }}</p>
+<div class="details">
+<span><strong>Deadline:</strong> {{ assignment.due_date|date:"d M Y, H:i" }}</span>
+<span><strong>Maximum marks:</strong> {{ assignment.max_marks }}</span>
+</div>
+{% if submission %}
+{% if submission.status == "MARKED" or submission.status == "RETURNED" %}
+<span class="badge done">Marked</span>
+{% elif submission.status == "LATE" %}
+<span class="badge late">Submitted late</span>
+{% else %}
+<span class="badge done">Submitted</span>
+{% endif %}
+{% else %}
+<span class="badge">Not submitted</span>
+{% endif %}
+<a class="btn" href="{% url 'assignments:assignment_detail' assignment.id %}">View Assignment</a>
+</div>
+{% endwith %}
+{% empty %}
+<div class="empty">
+<h2>No assignments available</h2>
+<p>There are currently no published assignments for your enrolled course units.</p>
+</div>
+{% endfor %}
+</div>
+<footer>Fastline Institute of Higher Education · Learning Without Boundaries.</footer>
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>

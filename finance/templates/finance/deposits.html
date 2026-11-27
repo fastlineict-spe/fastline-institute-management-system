@@ -1,0 +1,60 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deposits Register | FASTLINE INSTITUTE</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f6fb;color:#17233b;margin:0;padding:25px}
+main{max-width:1200px;margin:auto}.panel{background:white;padding:22px;border-radius:10px;margin-bottom:20px}
+h1{color:#12358b}input,select{padding:10px;border:1px solid #cbd5e1;border-radius:6px}
+button,a{background:#12358b;color:white;padding:10px 15px;border:0;border-radius:6px;text-decoration:none;display:inline-block;margin:5px;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:white}th,td{padding:10px;border-bottom:1px solid #e5eaf1;text-align:left}
+.total{font-size:22px;font-weight:bold;color:#12358b}
+.scroll{overflow-x:auto}
+@media print{body{background:white;padding:0}.filters,.actions{display:none}.panel{box-shadow:none}}
+</style>
+</head>
+<body><main>
+<div class="panel">
+<h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+<p><b>I SHALL RISE &amp; SHINE</b></p>
+<h2>Payments and Deposits Register</h2>
+<form class="filters" method="get">
+{% if campuses|length > 1 %}
+<label>Campus </label>
+<select name="campus"><option value="">All campuses</option>
+{% for campus in campuses %}<option value="{{ campus.pk }}" {% if selected_campus == campus.pk|stringformat:"s" %}selected{% endif %}>{{ campus.name }}</option>{% endfor %}
+</select>
+{% endif %}
+<label>From </label><input type="date" name="date_from" value="{{ date_from }}">
+<label>To </label><input type="date" name="date_to" value="{{ date_to }}">
+<button type="submit">Filter</button>
+<a href="?{% if selected_campus %}campus={{ selected_campus }}&{% endif %}date_from={{ date_from }}&date_to={{ date_to }}&export=csv">Download CSV</a>
+<button type="button" onclick="window.print()">Print Register</button>
+</form>
+<p class="total">Total received: UGX {{ total|floatformat:2 }}</p>
+</div>
+<div class="panel scroll">
+<table>
+<thead><tr><th>Date</th><th>Receipt</th><th>Campus</th><th>Registration</th><th>Student</th><th>Method</th><th>Reference</th><th>Amount (UGX)</th><th>Receipt</th></tr></thead>
+<tbody>
+{% for payment in payments %}
+<tr>
+<td>{{ payment.paid_at|date:"d M Y H:i" }}</td>
+<td>{{ payment.receipt_number }}</td>
+<td>{{ payment.campus.name }}</td>
+<td>{{ payment.student.registration_number }}</td>
+<td>{{ payment.student.user.get_full_name }}</td>
+<td>{{ payment.get_method_display }}</td>
+<td>{{ payment.transaction_reference|default:"—" }}</td>
+<td>{{ payment.amount|floatformat:2 }}</td>
+<td><a href="{% url 'finance:payment_receipt' payment.pk %}">View</a></td>
+</tr>
+{% empty %}<tr><td colspan="9">No payments found for these filters.</td></tr>{% endfor %}
+</tbody></table>
+<p>Showing up to 500 records. Use Download CSV for the full filtered register.</p>
+</div>
+<div class="actions"><a href="{% url 'finance:record_payment' %}">Record Payment</a><a href="{% url 'finance:fee_assignment' %}">Fee Assignment</a></div>
+</main></body></html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Resources | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f5f9;color:#172944}
+.sidebar{position:fixed;top:0;bottom:0;width:245px;background:#10213e;padding:28px 20px;color:white}
+.brand{font-size:21px;font-weight:bold}
+.brand small{display:block;color:#d9ad50;font-size:10px;margin-top:7px;letter-spacing:1px}
+.nav-title{font-size:10px;color:#9aabc2;margin:38px 10px 12px}
+.nav a{display:block;color:#cbd5e5;text-decoration:none;padding:14px;border-radius:7px;font-size:13px}
+.nav a.active,.nav a:hover{background:#263d60;color:white}
+.main{margin-left:245px}
+.topbar{height:72px;background:white;border-bottom:1px solid #e6eaf0;display:flex;align-items:center;justify-content:space-between;padding:0 35px;font-size:13px}
+.content{padding:35px;max-width:1200px;margin:auto}
+h1{font-size:27px;margin:0 0 9px}
+.subtitle{color:#77859a;font-size:14px;margin-bottom:28px}
+.banner{background:linear-gradient(110deg,#10213e,#294c78);padding:28px;border-radius:12px;color:white;margin-bottom:28px}
+.banner h2{margin:0 0 10px;font-size:20px}
+.banner p{font-size:13px;color:#dce5f0;line-height:1.7;margin:0}
+.heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}
+.heading h2{font-size:18px}
+.count{font-size:12px;color:#77859a}
+.resources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.resource{background:white;border:1px solid #e6eaf0;border-radius:12px;padding:23px}
+.tag{background:#fff3d8;color:#86621e;padding:7px 11px;border-radius:20px;font-size:10px;font-weight:bold}
+.resource h3{font-size:17px;margin:17px 0 8px}
+.course{font-size:12px;color:#65748a}
+.description{font-size:13px;color:#68778c;line-height:1.6;margin-top:15px}
+.meta{border-top:1px solid #edf0f4;margin-top:18px;padding-top:13px;color:#8793a5;font-size:11px;line-height:1.8}
+.download{display:inline-block;margin-top:17px;background:#10213e;color:white;text-decoration:none;padding:12px 17px;border-radius:6px;font-size:12px}
+.empty{background:white;border:1px solid #e6eaf0;border-radius:12px;padding:55px 20px;text-align:center;grid-column:1/-1}
+.empty h3{margin:0 0 12px}
+.empty p{font-size:13px;color:#77859a}
+.footer{text-align:center;color:#98a2b3;font-size:11px;padding:35px}
+@media(max-width:800px){.sidebar{position:static;width:100%;padding:20px}.nav-title{margin-top:20px}.nav{display:flex;flex-wrap:wrap}.nav a{padding:10px}.main{margin:0}.content{padding:20px}.resources{grid-template-columns:1fr}.topbar{padding:0 18px}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="brand">FASTLINE<small>INSTITUTE OF HIGHER EDUCATION</small></div>
+<div class="nav-title">STUDENT PORTAL</div>
+<nav class="nav">
+<a href="/students/dashboard/">Overview</a>
+<a href="/courses/my-courses/">My Course Units</a>
+<a class="active" href="/resources/student/">Learning Resources</a>
+<a href="#">Assignments</a>
+<a href="#">Results & Progress</a>
+<a href="#">Study Calendar</a>
+<a href="/accounts/logout/">Sign Out</a>
+</nav>
+</aside>
+<main class="main">
+<header class="topbar">
+<span>STUDENT LEARNING SPACE</span>
+<span>{{ student.user.get_full_name|default:student.user.username }}</span>
+</header>
+<div class="content">
+<h1>Learning Resources</h1>
+<p class="subtitle">Your digital library for academic learning and development.</p>
+<section class="banner">
+<h2>Your Digital Learning Library</h2>
+<p>Access lecture notes, presentations, recommended reading and other learning materials published by your lecturers for your enrolled course units.</p>
+</section>
+<div class="heading">
+<h2>Available Learning Materials</h2>
+<span class="count">{{ materials|length }} material(s)</span>
+</div>
+<div class="resources">
+{% for material in materials %}
+<article class="resource">
+<span class="tag">{{ material.get_material_type_display }}</span>
+<h3>{{ material.title }}</h3>
+<div class="course">{{ material.course.course_code }} — {{ material.course.course_title }}</div>
+<div class="description">{{ material.description|default:"No additional description provided." }}</div>
+<div class="meta">
+Uploaded by {{ material.uploaded_by.get_full_name|default:material.uploaded_by.username|default:"Fastline Institute" }}<br>
+{{ material.date_uploaded|date:"d F Y" }}
+</div>
+<a class="download" href="{{ material.file.url }}" target="_blank" rel="noopener">Open / Download Material</a>
+</article>
+{% empty %}
+<div class="empty">
+<h3>No learning materials available yet</h3>
+<p>Your lecturers have not published learning materials for your enrolled course units yet. Please check again later.</p>
+</div>
+{% endfor %}
+</div>
+<div class="footer">FASTLINE INSTITUTE OF HIGHER EDUCATION · Learning Without Boundaries.</div>
+</div>
+</main>
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>

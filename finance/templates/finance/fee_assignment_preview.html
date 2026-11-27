@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Review Fee Assignment | FIMS</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f6fb;margin:0;color:#17233b}.wrap{max-width:1100px;margin:30px auto;padding:20px}
+header{background:#071943;color:white;padding:22px;border-radius:12px}header h1{margin:0;font-size:22px}
+.panel{background:white;padding:22px;border-radius:12px;margin-top:18px;box-shadow:0 3px 14px #10204012}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:10px;border-bottom:1px solid #e4e9f1;text-align:left}
+th{background:#eef3fa}.money{font-weight:bold;color:#12358b}.btn{border:0;border-radius:7px;padding:12px 18px;cursor:pointer;font-weight:bold}
+.primary{background:#12358b;color:white}.secondary{background:#e8edf5;color:#17233b}.danger{color:#9b2222}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.muted{color:#65738b}.summary{display:flex;gap:28px;flex-wrap:wrap}
+</style></head><body><div class="wrap">
+<header><h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1><div>I SHALL RISE &amp; SHINE Â· FEE ASSIGNMENT REVIEW</div></header>
+{% if form %}
+<div class="panel"><h2>Correct the assignment details</h2>{{ form.as_p }}{% if errors %}{{ errors }}{% endif %}<a href="{% url 'finance:fee_assignment' %}">Return to fee assignment</a></div>
+{% else %}
+<div class="panel"><h2>Review before saving</h2><p class="muted">Untick any student who should not receive this fee. Nothing is charged until you confirm.</p>
+<div class="summary"><div><b>Campus:</b> {{ data.campus }}</div><div><b>Fee item:</b> {{ data.description }}</div><div><b>Academic year:</b> {{ data.academic_year }}</div><div><b>Semester:</b> {{ data.semester }}</div><div><b>Amount per student:</b> <span class="money">UGX {{ data.amount|floatformat:0 }}</span></div></div>
+<form method="post" action="{% url 'finance:fee_assignment_confirm' %}">{% csrf_token %}
+<table><thead><tr><th>Include</th><th>#</th><th>Student</th><th>Registration number</th><th>Programme</th></tr></thead><tbody>
+{% for s in students %}<tr><td><input type="checkbox" name="include_ids" value="{{ s.pk }}" checked class="include"></td><td>{{ forloop.counter }}</td><td>{{ s.first_name }} {{ s.last_name }}</td><td>{{ s.registration_number|default:"â€”" }}</td><td>{{ s.programme|default:"â€”" }}</td></tr>{% endfor %}
+</tbody></table>
+<p><b>Selected:</b> <span id="count">{{ students|length }}</span> &nbsp; <b>Estimated total:</b> <span class="money">UGX <span id="total">{{ total|floatformat:0 }}</span></span></p>
+{% if already_charged %}<h3 class="danger">Excluded automatically â€” fee item already assigned</h3><ul>{% for s in already_charged %}<li>{{ s.first_name }} {{ s.last_name }} ({{ s.registration_number|default:"No registration number" }})</li>{% endfor %}</ul>{% endif %}
+<div class="actions"><button class="btn primary" type="submit" id="confirm">Confirm and assign fees</button><a class="btn secondary" href="{% url 'finance:fee_assignment' %}">Cancel</a></div></form></div>
+{% endif %}
+</div>
+{% if not form %}<script>
+const amount={{ data.amount|default:0 }};const boxes=[...document.querySelectorAll('.include')];
+function update(){const n=boxes.filter(b=>b.checked).length;document.getElementById('count').textContent=n;document.getElementById('total').textContent=(n*amount).toLocaleString('en-US',{maximumFractionDigits:0});document.getElementById('confirm').disabled=n===0;}
+boxes.forEach(b=>b.addEventListener('change',update));update();
+document.querySelector('form').addEventListener('submit',e=>{const n=boxes.filter(b=>b.checked).length;if(!n||!confirm(`Assign this fee to ${n} students? This will create permanent financial records.`))e.preventDefault();});
+</script>{% endif %}</body></html>

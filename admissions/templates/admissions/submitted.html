@@ -1,0 +1,24 @@
+﻿{% extends "base.html" %}
+{% block title %}Application Submitted | Fastline{% endblock %}
+{% block navigation %}
+<a href="{% url 'admissions:apply' %}">Online Application</a>
+{% endblock %}
+{% block page_heading %}Application Submitted{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <h2>Thank you for applying to Fastline Institute.</h2>
+    <p class="text-muted mt-3">Your application has been received and is awaiting review by the Admissions Office.</p>
+
+    {% if reference_number %}
+    <div class="card border-primary shadow-sm mx-auto mt-4" style="max-width: 480px;">
+        <div class="card-body">
+            <p class="text-muted mb-1">YOUR APPLICATION REFERENCE NUMBER</p>
+            <h3 class="text-primary fw-bold">{{ reference_number }}</h3>
+            <p class="small text-muted mb-0">Please keep this number safe. You can use it when making enquiries about your application.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'admissions:apply' %}" class="btn btn-primary mt-3">Submit Another Application</a>
+</div>
+{% endblock %}

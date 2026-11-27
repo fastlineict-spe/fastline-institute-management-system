@@ -1,0 +1,18 @@
+FASTLINE INSTITUTE OF HIGHER EDUCATION
+I SHALL RISE & SHINE
+
+APPLICATION APPROVED
+
+Dear {{ application.first_name }} {{ application.last_name }},
+
+Congratulations! Your application has been approved.
+
+Campus: {{ application.campus.name }}
+Programme: {{ application.programme }}
+Official Admission Number: {{ admission_number }}
+
+Your student record has been created. Keep your admission number safe. The Admissions Office will communicate any further registration and reporting instructions separately.
+
+Kind regards,
+Admissions Office
+FASTLINE INSTITUTE OF HIGHER EDUCATION

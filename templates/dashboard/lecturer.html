@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Dashboard | Fastline Institute</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+            color: #24334b;
+        }
+
+        header {
+            background: #10213e;
+            color: white;
+            padding: 25px 6%;
+        }
+
+        header h1 { margin: 0 0 8px; font-size: 25px; }
+        header p { margin: 0; color: #d9ad50; }
+
+        main {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 { margin-bottom: 7px; }
+        .welcome p { color: #64748b; }
+
+        .summary {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #d9ad50;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.04);
+        }
+
+        .summary strong {
+            display: block;
+            font-size: 30px;
+            color: #10213e;
+            margin-top: 8px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .action {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #10213e;
+            border: 1px solid #e5eaf1;
+            transition: .2s;
+        }
+
+        .action:hover {
+            transform: translateY(-3px);
+            border-color: #d9ad50;
+        }
+
+        .action h3 { margin-top: 0; }
+        .action p { color: #64748b; font-size: 14px; }
+
+        .section-title {
+            margin: 30px 0 15px;
+            color: #10213e;
+        }
+
+        .course {
+            background: white;
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #e5eaf1;
+        }
+
+        .course h3 { margin: 0 0 8px; }
+        .course p { margin: 4px 0; color: #64748b; font-size: 14px; }
+
+        .empty {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            color: #64748b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #8290a3;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="fastline-brand-bar" style="display:flex;align-items:center;gap:16px;padding:12px 22px;background:#102b59;color:white;border-bottom:3px solid #d5ad35;"><img src="{% static 'images/fastline-logo.jpg' %}" alt="Fastline Institute Logo" style="height:64px;width:auto;max-width:110px;object-fit:contain;background:white;border-radius:6px;padding:3px;"><div><div style="font-size:20px;font-weight:700;letter-spacing:.5px;">FASTLINE INSTITUTE OF HIGHER EDUCATION</div><div style="font-size:13px;font-weight:600;letter-spacing:2px;margin-top:5px;color:#f4d46b;">I SHALL RISE &amp; SHINE</div></div></div>
+
+<header>
+    <h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+    <p>Learning Without Boundaries.</p>
+<a href="{% url 'accounts:logout' %}" style="float:right;background:#d9ad50;color:#10213e;padding:10px 18px;border-radius:7px;text-decoration:none;font-weight:700;">Logout</a>
+</header>
+
+<main>
+
+    <div class="welcome">
+        <h2>Lecturer Dashboard</h2>
+        <p>Welcome, {{ request.user.get_full_name|default:request.user.username }}. Manage your teaching activities from here.</p>
+    </div>
+
+    <div class="summary">
+        <span>Total Assigned Course Units</span>
+        <strong>{{ total_courses }}</strong>
+    </div>
+
+    <div class="actions">
+
+        <a class="action" href="{% url 'assignments:lecturer_assignments' %}">
+            <h3>Assignments</h3>
+            <p>Create and manage assignments for your students.</p>
+        </a>
+
+        <a class="action" href="{% url 'learning_resources:tutor_materials' %}">
+            <h3>Teaching Materials</h3>
+            <p>Manage learning resources and teaching notes.</p>
+        </a>
+
+        <a class="action" href="{% url 'assignments:create_assignment' %}">
+            <h3>Create Assignment</h3>
+            <p>Prepare and publish a new student assignment.</p>
+        </a>
+
+    </div>
+
+    <h2 class="section-title">My Live Classrooms</h2>
+
+    {% for classroom in classrooms %}
+    <div class="course">
+        <h3>{{ classroom.title }}</h3>
+        <p>Course: {{ classroom.course.course_code }} - {{ classroom.course.course_title }}</p>
+        <p>Start: {{ classroom.start_time|date:"d F Y, H:i" }}</p>
+        <p>End: {{ classroom.end_time|date:"H:i" }}</p>
+        <p>Students can join using the scheduled Zoom link.</p>
+        <a href="{{ classroom.zoom_link }}" target="_blank" rel="noopener noreferrer"
+           style="display:inline-block;background:#d9ad50;color:#10213e;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:700;">
+            Open Zoom Classroom
+        </a>
+    </div>
+    {% empty %}
+    <div class="empty">You have no scheduled live classrooms at the moment.</div>
+    {% endfor %}
+
+    <h2 class="section-title">My Assigned Course Units</h2>
+
+    {% for course in assigned_courses %}
+    <div class="course">
+        <h3>{{ course.course_code }} — {{ course.course_title }}</h3>
+        <p>Programme: {{ course.programme }}</p>
+        <p>Year {{ course.year_of_study }} | {{ course.semester }}</p>
+        <p>Credit Units: {{ course.credit_units }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;">
+            <a href="{% url 'learning_resources:upload_material' course.id %}" style="background:#10213e;color:white;padding:10px 16px;border-radius:6px;text-decoration:none;">Upload Teaching Material</a>
+            <a href="{% url 'assignments:lecturer_assignments' %}" style="background:#d9ad50;color:#10213e;padding:10px 16px;border-radius:6px;text-decoration:none;">View Assignments</a>
+        </div>
+    </div>
+{% empty %}
+    <div class="empty">
+        No active course units have been assigned to your account yet.
+        Please contact the academic administrator.
+    </div>
+{% endfor %}
+
+</main>
+
+<footer>
+    Fastline Institute of Higher Education · Learning Without Boundaries.
+</footer>
+
+{% include "user_notifications/_notification_popup.html" %}
+
+</body>
+</html>

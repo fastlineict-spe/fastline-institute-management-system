@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }} | Fastline</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fa;font-family:Arial,sans-serif;color:#24334b}
+header{background:#10213e;color:white;padding:25px 6%}
+header h1{margin:0 0 7px;font-size:23px}
+header p{margin:0;color:#d9ad50}
+main{max-width:850px;margin:35px auto;padding:0 20px}
+.panel{background:white;padding:28px;border-radius:12px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+h2{color:#10213e}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{margin-bottom:17px}
+.field label{display:block;font-weight:bold;margin-bottom:8px;font-size:14px}
+.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid #d8e0eb;border-radius:7px;font-size:14px;background:white}
+.field textarea{resize:vertical}
+.full{grid-column:1/-1}
+.checkbox{display:flex;align-items:center;gap:10px;margin:10px 0 20px}
+.checkbox input{width:auto}
+button{background:#10213e;color:white;border:0;border-radius:7px;padding:13px 22px;font-weight:bold;cursor:pointer}
+button:hover{background:#243c65}
+.back{display:inline-block;margin-left:12px;color:#174c91;text-decoration:none}
+.errors{color:#b42318;font-size:13px;margin-top:5px}
+.help{font-size:12px;color:#64748b;margin-top:5px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header>
+<h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+<p>Learning Without Boundaries.</p>
+</header>
+<main>
+<div class="panel">
+<h2>{{ page_title }}</h2>
+<p>Enter the academic details of the course unit below.</p>
+
+<form method="post">
+{% csrf_token %}
+
+{% for field in form %}
+<div class="field {% if field.name == 'description' %}full{% endif %}">
+{% if field.field.widget.input_type == "checkbox" %}
+<div class="checkbox">
+{{ field }}
+<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+</div>
+{% else %}
+<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+{{ field }}
+{% endif %}
+
+{% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
+{% for error in field.errors %}<div class="errors">{{ error }}</div>{% endfor %}
+</div>
+{% endfor %}
+
+{% if form.non_field_errors %}
+<div class="errors">{{ form.non_field_errors }}</div>
+{% endif %}
+
+<button type="submit">Save Course Unit</button>
+<a class="back" href="{% url 'courses:manage_course_units' %}">Cancel</a>
+</form>
+</div>
+</main>
+</body>
+</html>

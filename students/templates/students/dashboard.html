@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Overview | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#18263e}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:255px;background:#10213e;color:white;padding:28px 18px;flex-shrink:0}
+.brand{font-size:20px;font-weight:bold;line-height:1.5;padding:0 12px}
+.brand small{display:block;color:#d9ad50;font-size:11px;letter-spacing:1.5px;margin-top:4px}
+.nav-title{font-size:10px;color:#8fa0ba;font-weight:bold;letter-spacing:1.5px;margin:38px 12px 12px}
+.nav a{display:block;text-decoration:none;color:#cbd5e5;padding:13px 14px;border-radius:8px;margin:5px 0;font-size:14px}
+.nav a.active,.nav a:hover{background:#243a5d;color:white}
+.main{flex:1;min-width:0}
+.topbar{height:75px;background:white;border-bottom:1px solid #e7ebf1;display:flex;align-items:center;justify-content:space-between;padding:0 35px}
+.topbar span{font-size:13px;color:#64748b}
+.profile{background:#edf1f7;padding:10px 15px;border-radius:25px;font-size:13px;font-weight:bold}
+.content{padding:35px;max-width:1250px;margin:auto}
+.welcome{background:linear-gradient(115deg,#10213e,#23446e);color:white;border-radius:14px;padding:32px;margin-bottom:25px;position:relative;overflow:hidden}
+.welcome h1{font-size:27px;margin:0 0 10px}
+.welcome p{color:#d5dfed;margin:0;font-size:14px}
+.gold{color:#e8c36d}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:28px}
+.card{background:white;border:1px solid #e8edf3;border-radius:12px;padding:22px}
+.card-label{font-size:12px;color:#718096;margin-bottom:13px}
+.card-value{font-size:25px;font-weight:bold;color:#172944}
+.card-note{font-size:11px;color:#8995a6;margin-top:8px}
+.section{background:white;border:1px solid #e8edf3;border-radius:12px;padding:25px;margin-bottom:20px}
+.section h2{font-size:17px;margin:0 0 20px}
+.details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.detail{padding:15px;background:#f7f9fc;border-radius:8px}
+.detail label{display:block;color:#8290a3;font-size:11px;margin-bottom:8px}
+.detail strong{font-size:14px;color:#233650}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.action{display:inline-block;text-decoration:none;background:#10213e;color:white;padding:13px 19px;border-radius:7px;font-size:13px}
+.action.gold-btn{background:#d9ad50;color:#172944}
+.footer{text-align:center;color:#98a2b3;font-size:11px;padding:20px}
+@media(max-width:800px){.layout{display:block}.sidebar{width:100%;padding:18px}.nav-title{margin-top:20px}.nav{display:flex;flex-wrap:wrap}.nav a{padding:10px}.topbar{padding:0 18px}.content{padding:20px}.cards{grid-template-columns:1fr}.details{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="fastline-brand-bar" style="display:flex;align-items:center;gap:16px;padding:12px 22px;background:#102b59;color:white;border-bottom:3px solid #d5ad35;"><img src="{% static 'images/fastline-logo.jpg' %}" alt="Fastline Institute Logo" style="height:64px;width:auto;max-width:110px;object-fit:contain;background:white;border-radius:6px;padding:3px;"><div><div style="font-size:20px;font-weight:700;letter-spacing:.5px;">FASTLINE INSTITUTE OF HIGHER EDUCATION</div><div style="font-size:13px;font-weight:600;letter-spacing:2px;margin-top:5px;color:#f4d46b;">I SHALL RISE &amp; SHINE</div></div></div>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand">FASTLINE<small>INSTITUTE OF HIGHER EDUCATION</small></div>
+<div class="nav-title">STUDENT PORTAL</div>
+<nav class="nav">
+<a class="active" href="/students/dashboard/">▦ &nbsp; Overview</a>
+<a href="/courses/my-courses/">▤ &nbsp; My Course Units</a>
+<a href="/resources/student/">▧ &nbsp; Learning Resources</a>
+<a href="/assignments/student/">☷ &nbsp; Assignments</a>
+<a href="/results/student/">▥ &nbsp; Results & Progress</a>
+<a href="#">▦ &nbsp; Study Calendar</a>
+<a href="/messages/">✉ &nbsp; Messages</a>
+<a href="/notifications/student/">🔔 &nbsp; Notifications</a>
+</nav>
+<div class="nav-title">ACCOUNT</div>
+<nav class="nav">
+<a href="/accounts/logout/">↪ &nbsp; Sign Out</a>
+</nav>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<span>STUDENT LEARNING SPACE</span>
+<div class="profile">{{ student.user.get_full_name|default:student.user.username }}</div>
+</header>
+
+<div class="content">
+<section class="welcome">
+<h1>Welcome back, <span class="gold">{{ student.user.first_name|default:student.user.username }}</span></h1>
+<p>Welcome to your learning space. Your academic journey continues here.</p>
+</section>
+
+<div class="cards">
+<div class="card">
+<div class="card-label">REGISTRATION NUMBER</div>
+<div class="card-value" style="font-size:20px">{{ student.registration_number }}</div>
+<div class="card-note">Your student identification</div>
+</div>
+<div class="card">
+<div class="card-label">YEAR OF STUDY</div>
+<div class="card-value">{{ student.year_of_study }}</div>
+<div class="card-note">Current academic level</div>
+</div>
+<div class="card">
+<div class="card-label">ACCOUNT STATUS</div>
+<div class="card-value" style="font-size:20px">{{ student.get_status_display }}</div>
+<div class="card-note">Student registration status</div>
+</div>
+</div>
+
+<section class="section">
+<h2>Academic Profile</h2>
+<div class="details">
+<div class="detail"><label>FULL NAME</label><strong>{{ student.user.get_full_name|default:student.user.username }}</strong></div>
+<div class="detail"><label>PROGRAMME</label><strong>{{ student.programme }}</strong></div>
+<div class="detail"><label>REGISTRATION NUMBER</label><strong>{{ student.registration_number }}</strong></div>
+<div class="detail"><label>YEAR OF STUDY</label><strong>Year {{ student.year_of_study }}</strong></div>
+<div class="detail"><label>PHONE NUMBER</label><strong>{{ student.phone_number|default:"Not provided" }}</strong></div>
+<div class="detail"><label>DATE REGISTERED</label><strong>{{ student.date_registered|date:"d F Y" }}</strong></div>
+</div>
+</section>
+
+<section class="section">
+<h2>My Live Classrooms</h2>
+
+{% for classroom in classrooms %}
+<div class="detail" style="padding:16px;margin-bottom:12px;">
+    <strong>{{ classroom.title }}</strong>
+    <p>{{ classroom.course.course_code }} - {{ classroom.course.course_title }}</p>
+    <p>Lecturer:
+        {{ classroom.course.lecturer.get_full_name|default:classroom.course.lecturer.username }}
+    </p>
+    <p>Start: {{ classroom.start_time|date:"d F Y, H:i" }}</p>
+    <p>End: {{ classroom.end_time|date:"H:i" }}</p>
+    <a href="{{ classroom.zoom_link }}" target="_blank" rel="noopener noreferrer"
+       style="display:inline-block;background:#d9ad50;color:#10213e;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:700;">
+        Join Zoom Class
+    </a>
+</div>
+{% empty %}
+<p>No scheduled live classrooms are available for your enrolled courses.</p>
+{% endfor %}
+</section>
+
+<section class="section">
+<h2>Quick Access</h2>
+<div class="actions">
+<a class="action gold-btn" href="/courses/my-courses/">View My Course Units</a>
+<a class="action" href="/resources/student/">Learning Resources</a>
+<a class="action" href="/assignments/student/">Assignments</a>
+</div>
+</section>
+<div class="footer">FASTLINE INSTITUTE OF HIGHER EDUCATION · Learning Without Boundaries.</div>
+</div>
+</main>
+</div>
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>

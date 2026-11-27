@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirm Message Deletion | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f9;font-family:Arial,sans-serif;color:#26344a}
+header{background:#10213e;color:white;padding:24px 7%}
+header strong{color:#e0b85b;font-size:19px}
+main{max-width:650px;margin:75px auto;padding:0 20px}
+.panel{background:white;padding:40px;border-radius:14px;box-shadow:0 8px 30px #10213e12;text-align:center}
+.warning{width:65px;height:65px;border-radius:50%;background:#fff0ef;color:#b42318;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px}
+h1{color:#10213e;margin-bottom:12px}
+.details{background:#f5f7fa;padding:20px;border-radius:9px;text-align:left;margin:25px 0}
+.details p{margin:9px 0}
+.note{color:#667085;line-height:1.7}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:30px}
+button,.cancel{padding:14px 22px;border:0;border-radius:7px;font-size:15px;text-decoration:none;cursor:pointer}
+.delete{background:#b42318;color:white}
+.cancel{background:#e9edf3;color:#26344a}
+</style>
+</head>
+<body>
+<header><strong>FASTLINE INSTITUTE OF HIGHER EDUCATION</strong></header>
+<main>
+<div class="panel">
+<div class="warning">!</div>
+<h1>Delete Message?</h1>
+<p class="note">You are about to remove this message from your mailbox. Please review the details before confirming.</p>
+
+<div class="details">
+<p><strong>Subject:</strong> {{ message.subject }}</p>
+<p><strong>From:</strong> {{ message.sender.get_full_name|default:message.sender.username }}</p>
+<p><strong>To:</strong> {{ message.recipient.get_full_name|default:message.recipient.username }}</p>
+<p><strong>Date:</strong> {{ message.sent_at|date:"d M Y, H:i" }}</p>
+</div>
+
+<p class="note">This action removes your copy of the message. The other participant's copy will remain unless they also delete it.</p>
+
+<div class="actions">
+<form method="post">
+{% csrf_token %}
+<button class="delete" type="submit">Confirm Delete</button>
+</form>
+<a class="cancel" href="{% url 'messaging:inbox' %}">Cancel</a>
+</div>
+</div>
+</main>
+</body>
+</html>

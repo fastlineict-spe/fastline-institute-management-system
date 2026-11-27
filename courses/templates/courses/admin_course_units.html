@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course Unit Management | Fastline</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fa;font-family:Arial,sans-serif;color:#24334b}
+header{background:#10213e;color:white;padding:25px 6%}
+header h1{margin:0 0 7px;font-size:23px}
+header p{margin:0;color:#d9ad50}
+main{max-width:1150px;margin:35px auto;padding:0 20px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+h2{color:#10213e}
+.btn{display:inline-block;background:#10213e;color:white;padding:12px 18px;border-radius:7px;text-decoration:none;font-weight:bold}
+.btn:hover{background:#243c65}
+.summary,.panel{background:white;padding:22px;border-radius:12px;margin:22px 0;box-shadow:0 3px 12px rgba(0,0,0,.04)}
+.summary strong{display:block;font-size:30px;color:#10213e;margin-top:8px}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{text-align:left;padding:14px 12px;border-bottom:1px solid #e8edf3;font-size:14px}
+th{background:#f5f7fa;color:#526071}
+.edit{color:#174c91;font-weight:bold;text-decoration:none}
+.table-wrap{overflow-x:auto}
+.empty{text-align:center;padding:35px;color:#64748b}
+footer{text-align:center;padding:25px;color:#8290a3;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+<p>Learning Without Boundaries.</p>
+</header>
+<main>
+<div class="top">
+<div>
+<h2>Course Unit Management</h2>
+<p>Register, organise and assign academic course units.</p>
+</div>
+<a class="btn" href="{% url 'courses:create_course_unit' %}">+ Register Course Unit</a>
+</div>
+
+<div class="summary">
+Total Registered Course Units
+<strong>{{ total_courses }}</strong>
+</div>
+
+<div class="panel">
+<h3>Registered Course Units</h3>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Course Code</th>
+<th>Course Title</th>
+<th>Programme</th>
+<th>Year</th>
+<th>Semester</th>
+<th>Credit Units</th>
+<th>Lecturer</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+{% for course in courses %}
+<tr>
+<td>{{ course.course_code }}</td>
+<td>{{ course.course_title }}</td>
+<td>{{ course.programme }}</td>
+<td>{{ course.year_of_study }}</td>
+<td>{{ course.semester }}</td>
+<td>{{ course.credit_units }}</td>
+<td>{{ course.lecturer.get_full_name|default:course.lecturer.username|default:"Unassigned" }}</td>
+<td>{% if course.is_active %}Active{% else %}Inactive{% endif %}</td>
+<td><a class="edit" href="{% url 'courses:edit_course_unit' course.id %}">Edit</a></td>
+</tr>
+{% empty %}
+<tr><td colspan="9" class="empty">No course units have been registered yet.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+<a class="btn" href="{% url 'dashboard:administrator' %}">Back to Administrator Dashboard</a>
+</main>
+<footer>Fastline Institute of Higher Education · Learning Without Boundaries.</footer>
+</body>
+</html>

@@ -1,0 +1,232 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Announcement | Fastline Institute</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #17243b;
+        }
+        header {
+            background: #10213e;
+            color: white;
+            padding: 25px 6%;
+        }
+        header h1 { margin: 0 0 7px; font-size: 24px; }
+        header p { margin: 0; color: #d5deed; }
+        main {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e4e8ef;
+            box-shadow: 0 4px 15px rgba(0,0,0,.04);
+        }
+        h2 { color: #10213e; margin-top: 0; }
+        .intro { color: #65738a; line-height: 1.6; }
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 20px 0 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d7deea;
+            border-radius: 7px;
+            font-size: 15px;
+            background: white;
+        }
+        textarea { min-height: 160px; resize: vertical; }
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid #d9ad50;
+            border-color: #d9ad50;
+        }
+        .target-box {
+            background: #f6f8fc;
+            padding: 18px;
+            border-radius: 9px;
+            margin-top: 20px;
+            border: 1px solid #e3e8f0;
+        }
+        .target-box h3 { margin-top: 0; color: #10213e; }
+        .help { color: #68758a; font-size: 13px; line-height: 1.5; }
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        button, .back {
+            padding: 13px 20px;
+            border: 0;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        button {
+            background: #d9ad50;
+            color: #10213e;
+        }
+        .back {
+            background: #e9edf4;
+            color: #10213e;
+        }
+        .warning {
+            background: #fff8e8;
+            color: #72551c;
+            padding: 13px;
+            border-radius: 7px;
+            margin-top: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .error {
+            background: #fff0f0;
+            color: #a12b2b;
+            padding: 12px;
+            border-radius: 7px;
+            margin-bottom: 12px;
+        }
+        @media(max-width:600px) {
+            .panel { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+    <p>Learning Without Boundaries. | Notifications Centre</p>
+</header>
+
+<main>
+    <div class="panel">
+        <h2>Create Announcement</h2>
+        <p class="intro">
+            Publish an institutional announcement and select the users
+            who should receive it.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if is_central_admin %}
+                <label for="campus_id">Announcement Campus</label>
+                <select id="campus_id" name="campus_id">
+                    <option value="">All campuses (Global Announcement)</option>
+                    {% for campus in campuses %}
+                        <option value="{{ campus.id }}">{{ campus.name }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <p class="help">This announcement will be sent only to your assigned campus.</p>
+            {% endif %}
+
+            <label for="title">Announcement Title</label>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                maxlength="200"
+                placeholder="Enter announcement title"
+                required
+            >
+
+            <label for="message">Announcement Message</label>
+            <textarea
+                id="message"
+                name="message"
+                placeholder="Write your announcement here..."
+                required
+            ></textarea>
+
+            <label for="audience">Select Recipients</label>
+            <select id="audience" name="audience" required>
+                <option value="ALL_USERS">All eligible users</option>
+                <option value="STUDENTS">All active students</option>
+                <option value="LECTURERS">All active lecturers</option>
+                <option value="SPECIFIC_STUDENTS">Specific student group</option>
+            </select>
+
+            <div class="target-box" id="targetFields" hidden>
+                <h3>Student Targeting</h3>
+                <p class="help">
+                    Fill in the fields you want to use as filters.
+                    Leave a field blank if it should not restrict the audience.
+                </p>
+
+                <label for="programme">Programme</label>
+                <input
+                    type="text"
+                    id="programme"
+                    name="programme"
+                    placeholder="e.g. Diploma in Early Childhood Development"
+                >
+
+                <label for="year_of_study">Year of Study</label>
+                <select id="year_of_study" name="year_of_study">
+                    <option value="">All years</option>
+                    <option value="1">Year 1</option>
+                    <option value="2">Year 2</option>
+                    <option value="3">Year 3</option>
+                    <option value="4">Year 4</option>
+                </select>
+
+                <label for="semester">Semester</label>
+                <select id="semester" name="semester">
+                    <option value="">All semesters</option>
+                    {% for value, label in semesters %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="warning">
+                Publishing sends individual notifications to eligible recipients.
+                Please check your audience selection before publishing.
+            </div>
+
+            <div class="buttons">
+                <button type="submit">Publish Announcement</button>
+                <a class="back" href="{% url 'user_notifications:announcement_list' %}">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    const audience = document.getElementById("audience");
+    const targetFields = document.getElementById("targetFields");
+
+    function updateTargetFields() {
+        targetFields.hidden = audience.value !== "SPECIFIC_STUDENTS";
+    }
+
+    audience.addEventListener("change", updateTargetFields);
+    updateTargetFields();
+</script>
+
+</body>
+</html>
+

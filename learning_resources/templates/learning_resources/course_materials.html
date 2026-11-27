@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course Materials | Fastline</title>
+<style>
+body{margin:0;background:#f4f6fa;font-family:Arial,sans-serif;color:#18243a}
+header{background:#10213e;color:white;padding:25px 6%}
+header small{color:#d9ad50}
+main{max-width:1000px;margin:35px auto;padding:0 20px}
+.card{background:white;border:1px solid #e4e9f0;border-radius:12px;padding:22px;margin:15px 0}
+.item{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;border-top:1px solid #edf0f4;padding:17px 0}
+.btn{background:#10213e;color:white;padding:10px 15px;border-radius:7px;text-decoration:none;font-size:13px}
+.muted{color:#718096;font-size:14px}
+</style>
+</head>
+<body>
+<header><strong>FASTLINE</strong><br><small>INSTITUTE OF HIGHER EDUCATION</small></header>
+<main>
+<p class="muted"><a href="{% url 'courses:my_courses' %}">My Course Units</a> / Learning Materials</p>
+<div class="card">
+<p class="muted">{{ course.course_code }} | Year {{ course.year_of_study }} | {{ course.get_semester_display }}</p>
+<h1>{{ course.course_title }}</h1>
+<p class="muted">{{ course.programme }}</p>
+<h2>Learning Materials</h2>
+{% for material in materials %}
+<div class="item">
+<div>
+<strong>{{ material.title }}</strong>
+<p class="muted">{{ material.get_material_type_display }} | Uploaded {{ material.date_uploaded|date:"d M Y" }}</p>
+{% if material.description %}<p class="muted">{{ material.description }}</p>{% endif %}
+</div>
+<a class="btn" href="{{ material.file.url }}" target="_blank" rel="noopener">Open / Download</a>
+</div>
+{% empty %}
+<p class="muted">No learning materials have been uploaded for this course unit yet. Please check again later.</p>
+{% endfor %}
+</div>
+</main>
+</body>
+</html>

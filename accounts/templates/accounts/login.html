@@ -1,0 +1,682 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIMS | Fastline Institute of Higher Education</title>
+
+<style>
+:root {
+    --navy: #071a38;
+    --blue: #123b78;
+    --gold: #e8b83f;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+        linear-gradient(115deg, rgba(3,15,35,.94), rgba(5,30,66,.78)),
+        url("https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=2200&q=85");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--white);
+}
+
+/* TOP INSTITUTIONAL BAR */
+.topbar {
+    min-height: 42px;
+    padding: 10px 5%;
+    background: rgba(3,12,28,.88);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: .5px;
+    border-bottom: 1px solid rgba(232,184,63,.4);
+}
+
+.topbar span {
+    color: #f4d783;
+}
+
+/* MAIN NAVIGATION */
+.navbar {
+    min-height: 90px;
+    padding: 14px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: rgba(255,255,255,.97);
+    color: var(--navy);
+    box-shadow: 0 5px 25px rgba(0,0,0,.15);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+}
+
+.brand-name h1 {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--navy);
+}
+
+.brand-name p {
+    color: #9b7420;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+.nav-tag {
+    color: var(--blue);
+    border: 1px solid #d8e0ec;
+    padding: 11px 17px;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+}
+
+/* HERO SECTION */
+.hero {
+    min-height: calc(100vh - 132px);
+    padding: 65px 7%;
+    display: grid;
+    grid-template-columns: 1.25fr .75fr;
+    align-items: center;
+    gap: 55px;
+}
+
+.hero-content {
+    max-width: 680px;
+}
+
+.eyebrow {
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin-bottom: 22px;
+}
+
+.hero-content h2 {
+    font-size: clamp(38px, 5vw, 65px);
+    line-height: 1.08;
+    font-weight: 800;
+    margin-bottom: 22px;
+    text-shadow: 0 3px 15px rgba(0,0,0,.3);
+}
+
+.hero-content h2 span {
+    color: var(--gold);
+}
+
+.hero-description {
+    max-width: 570px;
+    color: #e3eaf5;
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 28px;
+}
+
+.motto {
+    display: inline-block;
+    border-left: 4px solid var(--gold);
+    padding: 12px 18px;
+    background: rgba(255,255,255,.10);
+    color: #ffe39a;
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-size: 14px;
+}
+
+.feature-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.feature {
+    padding: 11px 15px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 4px;
+    color: white;
+    background: rgba(255,255,255,.08);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* LOGIN PANEL */
+.login-panel {
+    width: 100%;
+    max-width: 780px;
+    justify-self: center;
+    background: rgba(255,255,255,.99);
+    color: #17243a;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 25px 70px rgba(0,0,0,.40);
+}
+/* LARGE HORIZONTAL LOGIN FORM */
+.login-body {
+    padding: 38px 40px;
+}
+
+.login-body form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 22px;
+    align-items: end;
+}
+
+.login-body label {
+    font-size: 14px;
+    margin: 12px 0 10px;
+}
+
+.login-body input {
+    min-height: 58px;
+    font-size: 16px;
+    padding: 17px;
+}
+
+.login-body .password-wrap {
+    min-width: 0;
+}
+
+.login-body .signin {
+    grid-column: 1 / -1;
+    min-height: 60px;
+    font-size: 16px;
+    margin-top: 28px;
+}
+
+.login-note {
+    font-size: 13px;
+    margin-top: 20px;
+}
+
+.panel-heading {
+    padding: 32px 40px;
+}
+
+.panel-heading h3 {
+    font-size: 30px;
+}
+
+.panel-heading p {
+    font-size: 15px;
+}
+
+@media (max-width: 650px) {
+    .login-panel {
+        max-width: 100%;
+    }
+
+    .login-body form {
+        grid-template-columns: 1fr;
+    }
+
+    .login-body .signin {
+        grid-column: auto;
+    }
+}
+.panel-heading {
+    background: var(--navy);
+    padding: 27px 30px;
+    border-bottom: 4px solid var(--gold);
+    color: white;
+}
+
+.panel-heading small {
+    display: block;
+    color: #f2d17c;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 9px;
+}
+
+.panel-heading h3 {
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.panel-heading p {
+    color: #cbd6e6;
+    font-size: 13px;
+}
+
+.login-body {
+    padding: 30px;
+}
+
+.login-body label {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #293b57;
+    margin: 17px 0 8px;
+}
+
+.login-body input {
+    width: 100%;
+    padding: 14px 13px;
+    border: 1px solid #d7dfeb;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    background: #f8fafc;
+}
+
+.login-body input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(18,59,120,.10);
+    background: white;
+}
+
+.password-wrap {
+    position: relative;
+}
+
+.password-wrap input {
+    padding-right: 70px;
+}
+
+.toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.signin {
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 4px;
+    background: var(--blue);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.signin:hover {
+    background: var(--navy);
+    transform: translateY(-1px);
+}
+
+.messages {
+    margin-bottom: 15px;
+}
+
+.message {
+    padding: 11px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background: #fff0f0;
+    color: #a12626;
+    font-size: 13px;
+}
+
+.login-note {
+    text-align: center;
+    font-size: 11px;
+    color: #718096;
+    margin-top: 17px;
+}
+
+/* SUPPORT AREA */
+.support {
+    padding: 20px 30px;
+    background: #f2f5fa;
+    border-top: 1px solid #e1e7f0;
+}
+
+.support h4 {
+    color: var(--navy);
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.support p {
+    color: #637086;
+    font-size: 11px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.campus {
+    margin-top: 12px;
+    font-size: 11px;
+    color: #33445e;
+    line-height: 1.9;
+}
+
+.campus strong {
+    display: block;
+    color: var(--blue);
+    letter-spacing: 1px;
+}
+
+.campus a {
+    color: #263f67;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.whatsapp {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: #168b58;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* FOOTER */
+.footer {
+    padding: 18px 5%;
+    background: rgba(3,12,28,.94);
+    border-top: 1px solid rgba(232,184,63,.45);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: #cbd5e1;
+    font-size: 11px;
+}
+
+.footer strong {
+    color: var(--gold);
+}
+
+/* MOBILE */
+@media (max-width: 850px) {
+    .hero {
+        grid-template-columns: 1fr;
+        padding: 45px 6%;
+        gap: 35px;
+    }
+
+    .login-panel {
+        justify-self: center;
+    }
+
+    .hero-content {
+        text-align: center;
+        margin: auto;
+    }
+
+    .hero-description {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .feature-list {
+        justify-content: center;
+    }
+
+    .motto {
+        display: inline-block;
+    }
+}
+
+@media (max-width: 520px) {
+    .topbar {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .navbar {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .brand {
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .brand-name h1 {
+        font-size: 17px;
+    }
+
+    .nav-tag {
+        display: none;
+    }
+
+    .hero-content h2 {
+        font-size: 37px;
+    }
+
+    .login-body {
+        padding: 23px;
+    }
+
+    .panel-heading {
+        padding: 23px;
+    }
+
+    .footer {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* FINAL FIMS LOGIN LAYOUT */
+.hero { grid-template-columns: minmax(0, 1fr) minmax(420px, 500px); gap: 40px; padding: 45px 6%; align-items: center; }
+.login-panel { width: 100%; max-width: 500px; justify-self: end; border-radius: 12px; background: #fff; overflow: hidden; }
+.panel-heading { text-align: center; padding: 30px 35px; }
+.panel-heading h3 { font-size: 32px; margin-bottom: 10px; }
+.panel-heading p { font-size: 14px; }
+.login-body { padding: 35px; }
+.login-body form { display: block; width: 100%; }
+.login-body label { display: block; width: 100%; margin: 20px 0 9px; font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #263c5b; }
+.login-body input { display: block; width: 100%; height: 62px; padding: 16px 18px; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; font-size: 16px; }
+.password-wrap { position: relative; width: 100%; }
+.password-wrap input { padding-right: 75px; }
+.password-wrap .toggle { right: 15px; }
+.login-body .signin { display: block; width: 100%; height: 62px; margin-top: 28px; border-radius: 6px; font-size: 16px; letter-spacing: 1.5px; }
+.login-note { text-align: center; margin-top: 20px; font-size: 12px; line-height: 1.6; }
+.support { padding: 25px 35px; }
+.support h4 { font-size: 15px; margin-bottom: 10px; }
+.support p, .campus { font-size: 12px; line-height: 1.8; }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; padding: 40px 6%; gap: 35px; } .hero-content { text-align: center; margin: auto; } .login-panel { justify-self: center; max-width: 560px; } }
+@media (max-width: 520px) { .login-body { padding: 24px; } .panel-heading { padding: 25px 20px; } .support { padding: 22px 24px; } }
+.hero-support{margin-top:25px;padding:25px 28px;max-width:620px;background:linear-gradient(135deg,#071a38,#123b78);border:1px solid #d7ad43;border-left:6px solid #e8b83f;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.25);color:#fff}.hero-support h4{color:#ffd875;font-size:16px;font-weight:800;letter-spacing:1.5px;margin-bottom:10px}.hero-support p{color:#e4ecf8;font-size:13px;line-height:1.7;margin-bottom:15px}.hero-support .campus{margin-top:14px;padding:12px 15px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:6px;color:#fff;font-size:13px;line-height:2}.hero-support .campus strong{display:block;color:#ffd875;font-size:12px;letter-spacing:1.2px;margin-bottom:3px}.hero-support .campus a{color:#fff;font-weight:800;text-decoration:none}.hero-support .campus a:hover{color:#ffd875}.hero-support .whatsapp{display:inline-block;margin-top:17px;padding:12px 20px;background:#168b58;color:#fff;border-radius:5px;text-decoration:none;font-weight:800;font-size:12px}.hero-support .whatsapp:hover{background:#106b43}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <span>FASTLINE INSTITUTE OF HIGHER EDUCATION</span>
+    
+</div>
+
+<header class="navbar">
+    <div class="brand">
+        <img class="logo"
+             src="{% static 'images/fastline-logo.jpg' %}"
+             alt="Fastline Institute Official Logo">
+
+        <div class="brand-name">
+            <h1>FASTLINE INSTITUTE</h1>
+            <p>OF HIGHER EDUCATION</p>
+        </div>
+    </div>
+
+    <div class="nav-tag">FIMS MANAGEMENT PORTAL</div>
+</header>
+
+<main class="hero">
+
+    <section class="hero-content">
+        <div class="eyebrow">WELCOME TO YOUR INSTITUTIONAL PORTAL</div>
+
+        
+
+        <p class="hero-description">
+            Welcome to the Fastline Institute Management System.
+            Your central gateway to academic services, learning resources,
+            institutional communication and campus management.
+            Connect with your academic community and manage your
+            institutional journey through one secure platform.
+        </p>
+
+        <div class="motto">I SHALL RISE &amp; SHINE</div>
+<div class="hero-support">
+            <h4>NEED ASSISTANCE?</h4>
+            <p>Contact our campus support team for help with FIMS access and institutional services.</p>
+
+            <div class="campus">
+                <strong>KAMPALA CAMPUS</strong>
+                <a href="tel:+256774182449">0774 182449</a> |
+                <a href="tel:+256702840251">0702 840251</a>
+            </div>
+
+            <div class="campus">
+                <strong>BUSIA CAMPUS</strong>
+                <a href="tel:+256770741599">0770 741599</a> |
+                <a href="tel:+256753992839">0753 992839</a>
+            </div>
+
+            <a class="whatsapp"
+               href="https://wa.me/256774182449"
+               target="_blank"
+               rel="noopener noreferrer">
+                WhatsApp Support
+            </a>
+        </div>
+
+
+    </section>
+
+    <section class="login-panel">
+
+        <div class="panel-heading">
+            <small>FASTLINE INSTITUTE OF HIGHER EDUCATION</small>
+            <h3>FIMS Login</h3>
+            <p>Sign in to access your institutional account.</p>
+        </div>
+
+        <div class="login-body">
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label for="username">USERNAME</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+
+                <label for="password">PASSWORD</label>
+                <div class="password-wrap">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="toggle"
+                        onclick="togglePassword()"
+                    >SHOW</button>
+                </div>
+
+                <button type="submit" class="signin">
+                    SIGN IN TO FIMS
+                </button>
+            </form>
+
+            <div class="login-note">
+                Authorised users only. Keep your login details secure.
+            </div>
+        </div>
+
+        
+
+    </section>
+</main>
+
+<footer class="footer">
+    <div>Copyright &copy; {% now "Y" %} <strong>FASTLINE INSTITUTE OF HIGHER EDUCATION</strong></div>
+    <div>FIMS - Empowering learning. Supporting excellence.</div>
+</footer>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    const button = document.querySelector(".toggle");
+
+    if (password.type === "password") {
+        password.type = "text";
+        button.textContent = "HIDE";
+    } else {
+        password.type = "password";
+        button.textContent = "SHOW";
+    }
+}
+</script>
+
+<script>document.getElementById("current-year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

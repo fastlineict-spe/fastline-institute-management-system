@@ -1,0 +1,217 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Command Centre | Fastline Institute{% endblock %}
+
+{% block page_heading %}Central Administration Command Centre{% endblock %}
+
+{% block navigation %}
+<div class="sidebar-heading">CENTRAL OVERSIGHT</div>
+<a href="{% url 'dashboard:administrator' %}" class="active">◆ Command Centre</a>
+
+<div class="sidebar-heading">CAMPUSES</div>
+<a href="{% url 'dashboard:campus_dashboard' 'NAMUGONGO' %}">Namugongo Campus</a>
+<a href="{% url 'dashboard:campus_dashboard' 'BUSIA' %}">Busia Campus</a>
+
+<div class="sidebar-heading">ACCOUNT</div>
+<a href="{% url 'accounts:logout' %}">Logout</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.command-welcome {
+    background: linear-gradient(115deg, #071943, #12358b);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 5px solid #ffd12e;
+}
+.command-welcome h1 {
+    font-size: clamp(22px, 3vw, 31px);
+    font-weight: 800;
+    margin: 10px 0;
+}
+.command-welcome p {
+    color: #dce7ff;
+    margin: 0;
+}
+.command-label {
+    color: #ffd12e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.command-section-title {
+    color: #071943;
+    font-size: 20px;
+    font-weight: 800;
+}
+.campus-card {
+    background: white;
+    border: 1px solid #e5eaf2;
+    border-radius: 14px;
+    padding: 24px;
+    height: 100%;
+    box-shadow: 0 5px 20px rgba(7,25,67,.05);
+    transition: transform .2s, box-shadow .2s;
+}
+.campus-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(7,25,67,.11);
+}
+.campus-symbol {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #edf2fc;
+    color: #12358b;
+    font-size: 23px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+.campus-card h3 {
+    color: #071943;
+    font-size: 21px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+.campus-contact {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.9;
+    min-height: 60px;
+}
+.campus-open {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    background: #12358b;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 800;
+}
+.campus-open:hover {
+    background: #071943;
+    color: #ffd12e;
+}
+.campus-count {
+    color: #12358b;
+    font-weight: 800;
+    font-size: 27px;
+}
+.command-note {
+    background: #fff9e5;
+    border: 1px solid #f3e2a4;
+    border-radius: 10px;
+    padding: 16px;
+    color: #705b1d;
+    font-size: 13px;
+    margin-top: 25px;
+}
+@media(max-width:600px) {
+    .command-welcome { padding: 22px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="command-welcome">
+    <span class="command-label">INSTITUTION-WIDE OVERSIGHT</span>
+    <h1>Welcome to the Command Centre</h1>
+    <p>
+        Central administration and operational oversight for
+        Fastline Institute of Higher Education.
+    </p>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="fims-stat">
+            <span class="text-secondary small fw-bold">REGISTERED ACTIVE CAMPUSES</span>
+            <strong>{{ campuses|length }}</strong>
+            <small class="text-muted">Institution-wide campus overview</small>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="fims-card h-100 d-flex flex-column justify-content-center">
+            <div class="fims-section-title">Central Administration</div>
+            <p class="text-muted mb-0 mt-2">
+                Select a campus below to access its operational dashboard.
+                Campus administrators remain restricted to their authorised campus.
+            </p>
+        </div>
+    </div>
+</div>
+
+<section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="command-section-title mb-1">Campus Management</h2>
+            <p class="text-muted small mb-0">Institutional campus directory</p>
+        </div>
+        <span class="badge rounded-pill text-bg-light border px-3 py-2">
+            {{ campuses|length }} Active Campus(es)
+        </span>
+    </div>
+
+    <div class="row g-4">
+        {% for campus in campuses %}
+        <div class="col-lg-6">
+            <article class="campus-card">
+                <div class="campus-symbol">F</div>
+
+                <span class="command-label" style="color:#a27b13;">
+                    FASTLINE INSTITUTE
+                </span>
+
+                <h3>{{ campus.name }}</h3>
+
+                <div class="campus-contact">
+                    {% if campus.phone_primary %}
+                        <div><strong>Primary contact:</strong> {{ campus.phone_primary }}</div>
+                    {% endif %}
+                    {% if campus.phone_secondary %}
+                        <div><strong>Secondary contact:</strong> {{ campus.phone_secondary }}</div>
+                    {% endif %}
+                    {% if not campus.phone_primary and not campus.phone_secondary %}
+                        <div>Campus contact information not provided.</div>
+                    {% endif %}
+                </div>
+
+                <a class="campus-open"
+                   href="{% url 'dashboard:campus_dashboard' campus.code %}">
+                    Open Campus Dashboard &rarr;
+                </a>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="fims-card text-center py-5">
+                <h4 class="text-secondary">No active campuses found</h4>
+                <p class="text-muted mb-0">
+                    No active campus records are currently available.
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="command-note">
+    <strong>Central oversight:</strong>
+    Use the campus dashboards to manage campus operations.
+    All campus access continues to follow the existing FIMS permission controls.
+</div>
+
+{% endblock %}
+

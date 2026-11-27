@@ -1,0 +1,147 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements | Fastline Institute</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #17243b;
+        }
+        header {
+            background: #10213e;
+            color: white;
+            padding: 25px 6%;
+        }
+        header h1 { margin: 0 0 7px; font-size: 25px; }
+        header p { margin: 0; color: #d5deed; }
+        main { max-width: 1150px; margin: 35px auto; padding: 0 20px; }
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        .top h2 { margin: 0; }
+        .btn {
+            display: inline-block;
+            background: #d9ad50;
+            color: #10213e;
+            padding: 12px 19px;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+        .announcement {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e4e8ef;
+            box-shadow: 0 3px 12px rgba(0,0,0,.035);
+        }
+        .announcement h3 { margin: 0 0 10px; color: #10213e; }
+        .message {
+            color: #536176;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .details {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 17px;
+            font-size: 13px;
+            color: #65738a;
+        }
+        .status {
+            color: #167448;
+            font-weight: bold;
+        }
+        .empty {
+            background: white;
+            padding: 45px 20px;
+            text-align: center;
+            border-radius: 10px;
+            color: #68758a;
+        }
+        @media(max-width:600px) {
+            header { padding: 22px; }
+            .top { align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+    <p>Learning Without Boundaries. | Announcement Management</p>
+</header>
+
+<main>
+    <div class="top">
+        <div>
+            <h2>Announcements</h2>
+            <p>Manage and monitor institutional announcements.</p>
+        </div>
+        <a class="btn" href="{% url 'user_notifications:create_announcement' %}">
+            + Create Announcement
+        </a>
+    </div>
+
+    {% for announcement in announcements %}
+        <section class="announcement">
+            <h3>{{ announcement.title }}</h3>
+
+            <div class="message">{{ announcement.message }}</div>
+
+            <div class="details">
+                <span>Audience: {{ announcement.get_audience_display }}</span>
+                <span>
+                    Campus:
+                    {% if announcement.campus %}
+                        {{ announcement.campus.name }}
+                    {% else %}
+                        All Campuses (Global)
+                    {% endif %}
+                </span>
+
+                {% if announcement.programme %}
+                    <span>Programme: {{ announcement.programme }}</span>
+                {% endif %}
+
+                {% if announcement.year_of_study %}
+                    <span>Year: {{ announcement.year_of_study }}</span>
+                {% endif %}
+
+                {% if announcement.semester %}
+                    <span>Semester: {{ announcement.semester }}</span>
+                {% endif %}
+
+                <span>Created: {{ announcement.date_created|date:"d M Y, H:i" }}</span>
+
+                {% if announcement.is_published %}
+                    <span class="status">Published</span>
+                {% else %}
+                    <span>Draft</span>
+                {% endif %}
+            </div>
+        </section>
+    {% empty %}
+        <div class="empty">
+            <h3>No announcements yet</h3>
+            <p>Create your first institutional announcement.</p>
+        </div>
+    {% endfor %}
+</main>
+
+</body>
+</html>
+

@@ -1,0 +1,319 @@
+﻿
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fastline | University Administration</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+<div id="fastline-brand-bar" style="display:flex;align-items:center;gap:16px;padding:12px 22px;background:#102b59;color:white;border-bottom:3px solid #d5ad35;"><img src="{% static 'images/fastline-logo.jpg' %}" alt="Fastline Institute Logo" style="height:64px;width:auto;max-width:110px;object-fit:contain;background:white;border-radius:6px;padding:3px;"><div><div style="font-size:20px;font-weight:700;letter-spacing:.5px;">FASTLINE INSTITUTE OF HIGHER EDUCATION</div><div style="font-size:13px;font-weight:600;letter-spacing:2px;margin-top:5px;color:#f4d46b;">I SHALL RISE &amp; SHINE</div></div></div>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">F</div>
+            <div class="brand-name">
+                <strong>FASTLINE</strong>
+                <span>INSTITUTE OF HIGHER EDUCATION</span>
+            </div>
+        </div>
+
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="navigation">
+            <a class="nav-link active" href="{% url 'departments:list' %}?campus={{ campus.code|urlencode }}">
+                <span class="nav-icon"></span> Overview
+            </a>
+            <a class="nav-link" href="{% url 'students:records' %}">
+                <span class="nav-icon"></span> Students
+                <span class="nav-arrow"></span>
+            </a>
+            <a class="nav-link" href="{% url 'admissions:list' %}">
+                <span class="nav-icon"></span> Online Applications
+                <span class="nav-arrow"></span>
+            </a>
+            <a class="nav-link" href="{% url 'lecturers:list' %}">
+                <span class="nav-icon"></span> Lecturers
+            </a>
+            <a class="nav-link" href="{% url 'departments:list' %}?campus={{ campus.code|urlencode }}">
+                <span class="nav-icon"></span> Departments
+            </a>
+            <a class="nav-link" href="{% url 'courses:manage_course_units' %}">
+                <span class="nav-icon"></span> Programmes
+            </a>
+            <a class="nav-link" href="{% url 'courses:manage_course_units' %}">
+                <span class="nav-icon"></span> Courses
+            </a>
+        </nav>
+
+        <div class="sidebar-label">ACADEMIC OPERATIONS</div>
+        <nav class="navigation">
+            <a class="nav-link" href="{% url "live_classrooms:admin_list" %}">
+                <span class="nav-icon"></span> Live Classrooms
+            </a>
+            <a class="nav-link" href="{% url 'assignments:lecturer_assignments' %}">
+                <span class="nav-icon"></span> Assignments
+            </a>
+            <a class="nav-link" href="#">
+                <span class="nav-icon"></span> Examinations
+            </a>
+            <a class="nav-link" href="{% url 'learning_resources:tutor_materials' %}">
+                <span class="nav-icon"></span> Learning Resources
+            </a>
+            <a class="nav-link" href="#">
+                <span class="nav-icon"></span> Attendance
+            </a>
+            <a class="nav-link" href="#">
+                <span class="nav-icon"></span> Results & Reports
+            </a>
+        </nav>
+
+        <div class="sidebar-label">SYSTEM</div>
+        <nav class="navigation">
+            <a class="nav-link" href="#">
+                <span class="nav-icon"></span> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="support-card">
+                <div class="support-symbol"></div>
+                <strong>Need assistance?</strong>
+                <p>Manage your institution with confidence.</p>
+            </div>
+            <div class="sidebar-motto">
+                LEARNING WITHOUT BOUNDARIES
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-area">
+
+        <header class="topbar">
+            <div class="page-location">
+                <span>FASTLINE INSTITUTE</span>
+                <span class="location-divider">/</span>
+                <strong>Administration</strong>
+            </div>
+
+            <div class="topbar-right">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    System online
+                </div>
+
+                <button class="top-icon" title="Notifications"></button>
+
+                <div class="user-profile">
+                    <div class="user-avatar">FA</div>
+                    <div class="user-details">
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>Administrator</span>
+                    </div>
+                    <span class="profile-arrow"></span>
+                </div>
+            </div>
+        <a href="{% url 'accounts:logout' %}" style="margin-left:18px;background:#d9ad50;color:#10213e;padding:10px 18px;border-radius:7px;text-decoration:none;font-weight:700;display:inline-block;">Logout</a>
+</header>
+
+        <div class="page-content">
+
+            <section class="welcome-section">
+                <div class="welcome-text">
+                    <div class="welcome-tag">INSTITUTIONAL DASHBOARD</div>
+                    <h1>Welcome back, {{ request.user.first_name|default:request.user.username }}.</h1>
+                    <p>Manage your institution, monitor academic activities and stay informed from one central workspace.</p>
+                    <div class="welcome-actions">
+                        <a href="{% url 'students:register' %}" class="primary-button"> Add New Student</a>
+                        <a href="#" class="secondary-button">View Reports <span></span></a>
+                    </div>
+                </div>
+                <div class="welcome-decoration">
+                    <div class="decoration-circle circle-one"></div>
+                    <div class="decoration-circle circle-two"></div>
+                    <div class="decoration-emblem">F</div>
+                    <span>ACADEMIC EXCELLENCE</span>
+                </div>
+            </section>
+
+            <section class="section-block">
+                <div class="section-heading">
+                    <div>
+                        <h2>Institution Overview</h2>
+                        <p>A snapshot of your institution's key records</p>
+                    </div>
+                    <div class="date-label"> &nbsp; Current Overview</div>
+                </div>
+
+                <div class="metrics-grid">
+                    <article class="metric-card">
+                        <div class="metric-header">
+                            <span>Total Students</span>
+                            <div class="metric-icon icon-blue"></div>
+                        </div>
+                        <div class="metric-value">{{ total_students }}</div>
+                        <div class="metric-footer">Registered student accounts</div>
+                    </article>
+
+                    <article class="metric-card">
+                        <div class="metric-header">
+                            <span>Academic Staff</span>
+                            <div class="metric-icon icon-gold"></div>
+                        </div>
+                        <div class="metric-value">{{ total_lecturers }}</div>
+                        <div class="metric-footer">Registered lecturer accounts</div>
+                    </article>
+
+                    <article class="metric-card">
+                        <div class="metric-header">
+                            <span>Active Courses</span>
+                            <div class="metric-icon icon-purple"></div>
+                        </div>
+                        <div class="metric-value">{{ total_courses }}</div>
+                        <div class="metric-footer">Academic course records</div>
+                    </article>
+
+                    <article class="metric-card">
+                        <div class="metric-header">
+                            <span>Pending Assignments</span>
+                            <div class="metric-icon icon-green"></div>
+                        </div>
+                        <div class="metric-value">{{ pending_assignments }}</div>
+                        <div class="metric-footer">Awaiting academic attention</div>
+                    </article>
+                </div>
+
+            <section class="content-panel" style="margin: 0 0 25px; padding: 24px; border: 2px solid #d5ad35; border-radius: 12px; background: #fff;">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+                    <div>
+                        <div style="font-size:12px; font-weight:700; letter-spacing:1.5px; color:#a47b16; margin-bottom:8px;">ADMISSIONS MANAGEMENT</div>
+                        <h3 style="margin:0 0 8px; color:#102b59;">Online Applications</h3>
+                        <p style="margin:0; color:#64748b;">View, review, approve, reject and manage prospective student applications.</p>
+                    </div>
+                    <a href="{% url 'admissions:list' %}" style="display:inline-block; padding:12px 22px; background:#102b59; color:#fff; text-decoration:none; border-radius:7px; font-weight:700;">
+                        Manage Applications
+                    </a>
+                </div>
+            </section>
+
+            </section>
+
+            <section class="middle-grid">
+
+                <div class="content-panel analytics-panel">
+                    <div class="panel-title">
+                        <div>
+                            <h3>Academic Activity</h3>
+                            <p>Institutional performance overview</p>
+                        </div>
+                        <span class="panel-menu"></span>
+                    </div>
+
+                    <div class="chart-placeholder">
+                        <div class="chart-y-labels">
+                            <span>100</span>
+                            <span>75</span>
+                            <span>50</span>
+                            <span>25</span>
+                            <span>0</span>
+                        </div>
+                        <div class="chart-area">
+                            <div class="chart-grid-lines">
+                                <i></i><i></i><i></i><i></i><i></i>
+                            </div>
+                            <div class="chart-message">
+                                <span class="chart-message-icon"></span>
+                                <strong>Academic analytics</strong>
+                                <small>Performance charts will appear as academic records are added.</small>
+                            </div>
+                            <div class="chart-months">
+                                <span>Jan</span><span>Feb</span><span>Mar</span>
+                                <span>Apr</span><span>May</span><span>Jun</span>
+                                <span>Jul</span><span>Aug</span><span>Sep</span>
+                                <span>Oct</span><span>Nov</span><span>Dec</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-panel">
+                    <div class="panel-title">
+                        <div>
+                            <h3>Quick Actions</h3>
+                            <p>Frequently used management tools</p>
+                        </div>
+                    </div>
+
+                    <div class="action-list">
+                        <a href="{% url 'students:register' %}" class="action-item">
+                            <span class="action-icon action-blue"></span>
+                            <span><strong>Register Student</strong><small>Create a student account</small></span>
+                            <b></b>
+                        </a>
+                        <a href="{% url 'lecturers:create' %}" class="action-item">
+                            <span class="action-icon action-gold"></span>
+                            <span><strong>Add Lecturer</strong><small>Create a lecturer account</small></span>
+                            <b></b>
+                        </a>
+                        <a href="{% url 'courses:create_course_unit' %}" class="action-item">
+                            <span class="action-icon action-purple"></span>
+                            <span><strong>Create Course</strong><small>Set up an academic course</small></span>
+                            <b></b>
+                        </a>
+                        <a href="#" class="action-item">
+                            <span class="action-icon action-green"></span>
+                            <span><strong>Schedule Classroom</strong><small>Plan an online session</small></span>
+                            <b></b>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bottom-grid">
+                <div class="content-panel">
+                    <div class="panel-title">
+                        <div>
+                            <h3>Recent Institutional Activities</h3>
+                            <p>Important updates from your academic workspace</p>
+                        </div>
+                        <a href="#" class="view-all">View all </a>
+                    </div>
+                    <div class="empty-activity">
+                        <div class="empty-activity-icon"></div>
+                        <strong>No recent activities yet</strong>
+                        <p>New registrations and academic activities will appear here.</p>
+                    </div>
+                </div>
+
+                <div class="content-panel announcement-panel">
+                    <div class="panel-title">
+                        <div>
+                            <h3>Institution Announcements</h3>
+                            <p>Important notices and updates</p>
+                        </div>
+                    </div>
+                    <div class="announcement-empty">
+                        <div class="announcement-icon"></div>
+                        <strong>Stay informed</strong>
+                        <p>Institutional announcements will be displayed here.</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <span> 2026 Fastline Institute of Higher Education. All rights reserved.</span>
+                <span>Powered by <strong>Ray Tech</strong></span>
+            </footer>
+
+        </div>
+    </main>
+</div>
+
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>
+
+

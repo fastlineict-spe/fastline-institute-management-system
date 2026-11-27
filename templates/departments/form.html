@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ page_title }}</title>
+<style>
+body{margin:0;background:#f3f6fb;font-family:Arial,sans-serif;color:#18243b}
+header{background:#101d38;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
+header a{color:#f5c65c;text-decoration:none}
+main{max-width:1150px;margin:32px auto;padding:0 20px}
+.panel{background:white;border-radius:12px;padding:20px;box-shadow:0 3px 14px #14213b12;margin-bottom:20px}
+input,textarea{padding:11px;border:1px solid #ccd4e1;border-radius:7px;width:100%;box-sizing:border-box;font:inherit}
+button,.btn{background:#172747;color:white;border:0;border-radius:7px;padding:10px 15px;text-decoration:none;cursor:pointer;display:inline-block}
+.gold{background:#bd8c22}.muted{background:#64748b}
+form.field{display:grid;gap:8px;margin:15px 0}
+.messages{padding:12px;background:#fff2d7;border-radius:8px;margin:12px 0}
+</style>
+</head>
+<body>
+<header>
+<strong>FASTLINE LMS | DEPARTMENT MANAGEMENT</strong>
+<a href="{% url 'departments:list' %}?campus={{ campus.code|urlencode }}">&lt;- Back to Departments</a>
+</header>
+<main>
+<div class="panel" style="max-width:650px;margin:auto">
+<h1>{{ page_title }}</h1>
+<p>Campus: <strong>{{ campus.name }}</strong></p>
+{% for message in messages %}<div class="messages">{{ message }}</div>{% endfor %}
+<form method="post">
+{% csrf_token %}
+<input type="hidden" name="campus_code" value="{{ campus.code }}">
+<label class="field">Department Code
+<input name="code" required maxlength="20" value="{{ department.code|default:'' }}" placeholder="e.g. ICT">
+</label>
+<label class="field">Department Name
+<input name="name" required maxlength="150" value="{{ department.name|default:'' }}" placeholder="e.g. Information Technology">
+</label>
+<label class="field">Description
+<textarea name="description" rows="4" placeholder="Department description">{{ department.description|default:'' }}</textarea>
+</label>
+<button class="gold" type="submit">{% if department %}Update Department{% else %}Register Department{% endif %}</button>
+<a class="btn muted" href="{% url 'departments:list' %}?campus={{ campus.code|urlencode }}">Cancel</a>
+</form>
+</div>
+</main>
+</body>
+</html>

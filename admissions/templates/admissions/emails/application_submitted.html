@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Application Received - Fastline Institute</title></head>
+<body style="margin:0;padding:24px 10px;background:#eef2f7;font-family:Arial,Helvetica,sans-serif;color:#263449;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:650px;margin:auto;background:#ffffff;border-collapse:collapse;">
+<tr><td style="background:#102b59;padding:28px 20px;text-align:center;">
+<img src="cid:fastline_logo" alt="Fastline Institute Logo" style="max-width:150px;max-height:95px;object-fit:contain;background:#ffffff;padding:8px;border-radius:8px;">
+<h1 style="color:#ffffff;font-size:23px;margin:15px 0 5px;">FASTLINE INSTITUTE</h1>
+<p style="color:#e7c66b;font-size:13px;font-weight:bold;letter-spacing:2px;margin:0;">OF HIGHER EDUCATION</p>
+<p style="color:#ffffff;font-size:12px;margin:12px 0 0;">I SHALL RISE &amp; SHINE</p>
+</td></tr>
+<tr><td style="padding:32px 28px;">
+<p style="display:inline-block;background:#e8f6ed;color:#187343;padding:9px 13px;border-radius:4px;font-size:12px;font-weight:bold;">APPLICATION SUCCESSFULLY RECEIVED</p>
+<h2 style="color:#102b59;font-size:25px;margin:12px 0;">Thank You for Applying!</h2>
+<p>Dear <strong>{{ application.first_name }} {{ application.last_name }}</strong>,</p>
+<p>Thank you for choosing FASTLINE INSTITUTE OF HIGHER EDUCATION. We are pleased to confirm that your online application has been successfully submitted and received by our Admissions Office.</p>
+<p>Your application is now awaiting review. Please keep your unique application reference number safe and quote it whenever you contact the Institute about this application.</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f0f4fa;border:1px solid #d8e1ef;border-radius:8px;margin:22px 0;">
+<tr><td style="padding:20px;text-align:center;">
+<p style="font-size:11px;color:#53677d;font-weight:bold;letter-spacing:1px;margin:0 0 10px;">YOUR APPLICATION REFERENCE NUMBER</p>
+<p style="font-size:25px;color:#102b59;font-weight:bold;letter-spacing:1px;margin:0;">{{ application.reference_number }}</p>
+<p style="font-size:12px;color:#66778b;margin:10px 0 0;">Keep this number for all admissions enquiries.</p>
+</td></tr></table>
+<h3 style="color:#102b59;font-size:17px;">Your application details</h3>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="9" style="border-collapse:collapse;font-size:14px;">
+<tr><td style="border-bottom:1px solid #e5eaf0;color:#66778b;">Applicant</td><td style="border-bottom:1px solid #e5eaf0;font-weight:bold;">{{ application.first_name }} {{ application.last_name }}</td></tr>
+<tr><td style="border-bottom:1px solid #e5eaf0;color:#66778b;">Campus</td><td style="border-bottom:1px solid #e5eaf0;">{{ application.campus.name }}</td></tr>
+<tr><td style="border-bottom:1px solid #e5eaf0;color:#66778b;">Programme</td><td style="border-bottom:1px solid #e5eaf0;">{{ application.programme }}</td></tr>
+<tr><td style="border-bottom:1px solid #e5eaf0;color:#66778b;">Year of study</td><td style="border-bottom:1px solid #e5eaf0;">{{ application.year_of_study }}</td></tr>
+<tr><td style="color:#66778b;">Current status</td><td style="color:#a36a08;font-weight:bold;">Pending Review</td></tr>
+</table>
+<div style="background:#fff8e8;border-left:4px solid #d5a638;padding:15px;margin:24px 0;">
+<strong style="color:#102b59;">What happens next?</strong>
+<p style="font-size:14px;line-height:1.6;margin:8px 0 0;">Our Admissions Office will review your application. You will receive another email when a decision has been made. If approved, the communication will include your admission number and further instructions.</p>
+</div>
+<p style="line-height:1.6;">Thank you for your interest in Fastline Institute. We appreciate the opportunity to consider your application.</p>
+<p style="margin-top:25px;">Kind regards,<br><strong>Admissions Office</strong><br>FASTLINE INSTITUTE OF HIGHER EDUCATION</p>
+</td></tr>
+<tr><td style="background:#102b59;text-align:center;padding:20px;color:#ffffff;">
+<strong style="color:#e7c66b;">I SHALL RISE &amp; SHINE</strong>
+<p style="font-size:11px;margin:8px 0 0;color:#dce5f1;">Kampala (Namugongo) Campus | Busia Campus</p>
+<p style="font-size:10px;margin:8px 0 0;color:#dce5f1;">This is an official automated admissions notification. Please keep it for your records.</p>
+</td></tr></table></body></html>

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }} | Fastline</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fa; color: #24334b; }
+        header { background: #10213e; color: white; padding: 24px 6%; }
+        header h1 { margin: 0 0 7px; font-size: 23px; }
+        header p { margin: 0; color: #d9ad50; }
+        main { max-width: 800px; margin: 35px auto; padding: 0 20px; }
+        .panel { background: white; padding: 28px; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,.04); }
+        h2 { color: #10213e; margin-top: 0; }
+        label { display: block; font-weight: bold; margin: 17px 0 7px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+        .helptext { display: block; color: #64748b; font-size: 13px; margin-top: 5px; }
+        .errorlist { color: #b42318; }
+        .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+        .btn { display: inline-block; background: #d9ad50; color: #10213e; padding: 12px 18px; border-radius: 7px; border: 0; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .back { background: #e8edf3; color: #10213e; }
+        .note { background: #f8fafc; padding: 13px; border-left: 4px solid #d9ad50; color: #64748b; margin-top: 18px; font-size: 14px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+    <p>Learning Without Boundaries.</p>
+</header>
+<main>
+    <div class="panel">
+        <h2>{{ page_title }}</h2>
+        <p>Enter the lesson details and paste the Zoom meeting invitation link.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}
+                {{ field.errors }}
+            {% endfor %}
+
+            <div class="note">
+                The lecturer is taken automatically from the selected course. Create the meeting in Zoom first, then paste its invitation link here.
+            </div>
+
+            <div class="actions">
+                <button class="btn" type="submit">{{ button_text }}</button>
+                <a class="btn back" href="{% url 'live_classrooms:admin_list' %}">Back to Classrooms</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

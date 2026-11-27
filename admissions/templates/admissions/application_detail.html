@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Review Application | FIMS{% endblock %}
+{% block navigation %}
+<a href="{% url 'dashboard:campus_dashboard' application.campus.code %}">Campus Dashboard</a>
+<a href="{% url 'students:records' %}">Student Records</a>
+<a href="{% url 'admissions:list' %}">Admissions Register</a>
+{% endblock %}
+{% block page_heading %}Application Review{% endblock %}
+{% block content %}
+<div class="container py-4" style="max-width:900px">
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <h2>Applicant Details</h2>
+        <div class="d-flex gap-2">
+            <button type="button" onclick="window.print()" class="btn btn-primary">Print Application</button>
+            <a href="{% url 'dashboard:campus_dashboard' application.campus.code %}" class="btn btn-outline-secondary">Back to Campus Dashboard</a>
+            <a href="{% url 'admissions:list' %}" class="btn btn-outline-secondary">Back to Register</a>
+        </div>
+    </div>
+    <style>
+    @media print {
+        .no-print, nav, footer, .sidebar { display: none !important; }
+        body { background: white !important; }
+        .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+        .container, .container-fluid { width: 100% !important; max-width: 100% !important; }
+    }
+    </style>
+    <div class="card card-body mb-4">
+        <h5>Applicant Information</h5>
+        <div class="row g-3 mt-1">
+            <div class="col-12 mb-3">
+                <div class="alert alert-primary mb-0">
+                    <strong>Application Reference:</strong>
+                    <span class="fw-bold">{{ application.reference_number }}</span>
+                </div>
+            </div>
+            <div class="col-md-6"><strong>Name</strong><br>{{ application.first_name }} {{ application.last_name }}</div>
+            <div class="col-md-6"><strong>Email</strong><br>{{ application.email }}</div>
+            <div class="col-md-6"><strong>Phone</strong><br>{{ application.phone_number }}</div>
+            <div class="col-md-6"><strong>Gender</strong><br>{{ application.get_gender_display }}</div>
+            <div class="col-md-6"><strong>Date of Birth</strong><br>{{ application.date_of_birth|default:"Not provided" }}</div>
+            <div class="col-md-6"><strong>Campus</strong><br>{{ application.campus.name }}</div>
+            <div class="col-md-6"><strong>Programme</strong><br>{{ application.programme }}</div>
+            <div class="col-md-6"><strong>Year of Study</strong><br>{{ application.year_of_study }}</div>
+            <div class="col-12"><strong>Address</strong><br>{{ application.address|default:"Not provided" }}</div>
+            <div class="col-md-6"><strong>Date Submitted</strong><br>{{ application.date_submitted|date:"d M Y, H:i" }}</div>
+            <div class="col-md-6"><strong>Status</strong><br>{{ application.get_status_display }}</div>
+        </div>
+    </div>
+
+    {% if application.student %}
+    <div class="alert alert-success">
+        Student record created. Admission number: <strong>{{ application.student.registration_number }}</strong>
+    </div>
+    {% endif %}
+
+    {% if application.rejection_reason %}
+    <div class="alert alert-warning">Rejection reason: {{ application.rejection_reason }}</div>
+    {% endif %}
+
+    <div class="card card-body mb-4 no-print">
+        <h5 class="text-danger">Delete Application</h5>
+        <p class="text-muted mb-3">
+            This permanently deletes the application record. If a student record
+            has already been created, that student record and account will remain.
+        </p>
+        <form method="post" action="{% url 'admissions:delete' application.pk %}"
+              onsubmit="return confirm('Permanently delete this application? Any linked student record and account will be retained.');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">Permanently Delete Application</button>
+        </form>
+    </div>
+
+    {% if application.status == "PENDING" %}
+    <div class="card card-body">
+        <h5>Process Application</h5>
+        <form method="post" action="{% url 'admissions:approve' application.pk %}" class="mb-3">
+            {% csrf_token %}
+            <button class="btn btn-success" onclick="return confirm('Approve this applicant and create their official student account and record?')">Approve and Register Student</button>
+        </form>
+        <hr>
+        <form method="post" action="{% url 'admissions:reject' application.pk %}">
+            {% csrf_token %}
+            <label class="form-label">Reason for rejection</label>
+            <textarea name="rejection_reason" class="form-control mb-3" rows="3" required></textarea>
+            <button class="btn btn-danger" onclick="return confirm('Reject this application?')">Reject Application</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

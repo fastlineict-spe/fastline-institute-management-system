@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Assignment | Fastline</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6fa;font-family:Arial,sans-serif;color:#17243a}
+header{background:#142747;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
+header a{color:white;text-decoration:none}.brand{font-weight:bold;font-size:19px}.brand small{display:block;color:#d9ad50;font-size:11px;margin-top:5px}
+.container{max-width:850px;margin:35px auto;padding:0 20px}.panel{background:white;border:1px solid #e4e9f0;border-radius:12px;padding:27px}
+h1{margin-top:0}label{display:block;font-weight:bold;margin:18px 0 7px;font-size:14px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd4df;border-radius:7px;font:inherit;background:white}
+textarea{min-height:130px;resize:vertical}.help{color:#718096;font-size:12px;margin-top:6px}
+.btn{background:#142747;color:white;border:0;border-radius:7px;padding:13px 20px;font-weight:bold;cursor:pointer;margin-top:20px}
+.error{background:#ffe8e8;color:#9c2525;padding:13px;border-radius:7px;margin:15px 0}
+.check{display:flex;align-items:center;gap:10px;margin-top:18px}.check input{width:auto}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">FASTLINE <small>INSTITUTE OF HIGHER EDUCATION</small></div>
+<a href="{% url 'assignments:lecturer_assignments' %}">Back to Assignments</a>
+</header>
+<div class="container">
+<div class="panel">
+<h1>Create Coursework Assignment</h1>
+<p class="help">Complete the details below. You can save as a draft or publish immediately.</p>
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<label for="course">Course Unit</label>
+<select name="course" id="course" required>
+<option value="">Select course unit</option>
+{% for course in courses %}
+<option value="{{ course.id }}">{{ course.course_code }} — {{ course.course_title }}</option>
+{% endfor %}
+</select>
+
+<label for="title">Assignment Title</label>
+<input type="text" name="title" id="title" maxlength="200" required placeholder="e.g. Assignment One: Child Development">
+
+<label for="instructions">Instructions and Coursework Questions</label>
+<textarea name="instructions" id="instructions" required placeholder="Explain the task, requirements and submission instructions..."></textarea>
+
+<label for="attachment">Attach Assignment Document (optional)</label>
+<input type="file" name="attachment" id="attachment" accept=".pdf,.doc,.docx,.ppt,.pptx">
+<p class="help">You may attach a document containing questions or additional instructions.</p>
+
+<label for="due_date">Submission Deadline</label>
+<input type="datetime-local" name="due_date" id="due_date" required>
+
+<label for="max_marks">Maximum Marks</label>
+<input type="number" name="max_marks" id="max_marks" min="1" step="0.01" value="100" required>
+
+<label for="rubric">Marking Rubric (optional)</label>
+<textarea name="rubric" id="rubric" placeholder="Introduction|10|Clear introduction&#10;Discussion|50|Depth of discussion&#10;Conclusion|20|Relevant conclusion&#10;Referencing|20|Correct referencing"></textarea>
+<p class="help">Enter one criterion per line in this format: Criterion title | Maximum marks | Description. The rubric criteria should add up to the assignment's maximum marks.</p>
+
+<div class="check">
+<input type="checkbox" name="is_published" id="is_published" checked>
+<label for="is_published" style="margin:0">Publish assignment for students immediately</label>
+</div>
+
+<button class="btn" type="submit">Save Assignment</button>
+</form>
+</div>
+</div>
+</body>
+</html>

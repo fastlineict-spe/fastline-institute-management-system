@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Calendar | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f9;color:#26344a;font-family:Arial,sans-serif}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:245px;background:#10213e;color:white;padding:30px 20px}
+.brand{font-size:19px;font-weight:bold;line-height:1.5}
+.tagline{font-size:11px;color:#d9ad50;margin:8px 0 35px}
+.sidebar a{display:block;color:#dce4f1;text-decoration:none;padding:13px 14px;border-radius:7px;margin:5px 0;font-size:14px}
+.sidebar a:hover,.sidebar a.active{background:#263c60;color:white}
+.main{margin-left:245px;padding:35px;max-width:1450px}
+h1{font-size:27px;color:#10213e;margin:0 0 8px}
+.sub{font-size:14px;color:#778397}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:15px}
+.panel{background:white;border:1px solid #e6eaf0;border-radius:12px;padding:24px;margin-bottom:22px}
+.panel h2{font-size:17px;color:#10213e;margin:0 0 20px}
+.event{display:flex;gap:18px;padding:17px 0;border-bottom:1px solid #edf0f4}
+.event:last-child{border-bottom:0}
+.date{min-width:65px;height:65px;border-radius:9px;background:#f0f3f8;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#10213e}
+.day{font-size:23px;font-weight:bold}
+.month{font-size:11px;text-transform:uppercase;color:#7c8798}
+.details{flex:1}
+.event-title{font-weight:bold;color:#10213e;margin-bottom:7px}
+.meta{font-size:12px;color:#778397;margin-bottom:7px}
+.description{font-size:13px;color:#596579;line-height:1.6;white-space:pre-line}
+.tag{display:inline-block;background:#eef2f8;color:#294365;padding:5px 9px;border-radius:20px;font-size:11px}
+.assignment{background:#fff5df;color:#87601b}
+.open{font-size:12px;color:#173b72;text-decoration:none;font-weight:bold;display:inline-block;margin-top:9px}
+.empty{text-align:center;padding:35px;color:#778397}
+.back{color:#10213e;text-decoration:none;font-size:13px;font-weight:bold}
+@media(max-width:800px){.sidebar{position:static;width:100%;padding:18px}.sidebar a{display:inline-block;padding:9px}.main{margin:0;padding:20px 14px}.header{align-items:flex-start;flex-direction:column}.event{gap:10px}.date{min-width:55px;height:58px}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="brand">FASTLINE<br>INSTITUTE OF HIGHER EDUCATION</div>
+<div class="tagline">LEARNING WITHOUT BOUNDARIES.</div>
+<a href="/students/dashboard/">Overview</a>
+<a href="/courses/my-courses/">My Course Units</a>
+<a href="/resources/student/">Learning Resources</a>
+<a href="/assignments/student/">Assignments</a>
+<a href="/results/student/">Results &amp; Progress</a>
+<a class="active" href="/calendar/student/">Study Calendar</a>
+<a href="/accounts/logout/">Sign Out</a>
+</aside>
+<main class="main">
+<div class="header">
+<div>
+<h1>Study Calendar</h1>
+<div class="sub">Keep track of academic events and coursework deadlines.</div>
+</div>
+<a class="back" href="/students/dashboard/">← Back to Dashboard</a>
+</div>
+<section class="panel">
+<h2>Upcoming Events</h2>
+{% if upcoming_events %}
+{% for event in upcoming_events %}
+<div class="event">
+<div class="date">
+<div class="day">{{ event.date|date:"d" }}</div>
+<div class="month">{{ event.date|date:"M Y" }}</div>
+</div>
+<div class="details">
+<div class="event-title">{{ event.title }}</div>
+<div class="meta">{{ event.date|date:"l, d F Y · g:i A" }}{% if event.course %} | {{ event.course }}{% endif %}</div>
+<span class="tag {% if event.source == 'Course assignment' %}assignment{% endif %}">{{ event.event_type }}</span>
+{% if event.description %}<div class="description">{{ event.description|truncatechars:220 }}</div>{% endif %}
+{% if event.url %}<a class="open" href="{{ event.url }}">View Assignment →</a>{% endif %}
+</div>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty">There are no upcoming academic events or assignment deadlines at the moment.</div>
+{% endif %}
+</section>
+<section class="panel">
+<h2>Past Events</h2>
+{% if past_events %}
+{% for event in past_events %}
+<div class="event">
+<div class="date">
+<div class="day">{{ event.date|date:"d" }}</div>
+<div class="month">{{ event.date|date:"M Y" }}</div>
+</div>
+<div class="details">
+<div class="event-title">{{ event.title }}</div>
+<div class="meta">{{ event.date|date:"l, d F Y · g:i A" }}{% if event.course %} | {{ event.course }}{% endif %}</div>
+<span class="tag">{{ event.event_type }}</span>
+</div>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty">Your past events will appear here.</div>
+{% endif %}
+</section>
+</main>
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>

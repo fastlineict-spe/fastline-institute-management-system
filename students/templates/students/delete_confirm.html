@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Student Deletion | Fastline Institute</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            background: #f2f5fa;
+            font-family: Arial, sans-serif;
+            color: #17233d;
+        }
+        .container {
+            max-width: 650px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.08);
+        }
+        h1 { color: #102653; }
+        .warning {
+            background: #fff3cd;
+            color: #755400;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .blocked {
+            background: #fde8e8;
+            color: #8b2020;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .details {
+            background: #f5f7fb;
+            padding: 18px;
+            border-radius: 8px;
+            line-height: 1.8;
+        }
+        button, .cancel {
+            display: inline-block;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 8px 5px 0 0;
+        }
+        button { background: #b42318; color: white; }
+        .cancel { background: #e5eaf2; color: #17233d; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Confirm Student Deletion</h1>
+    <p><strong>FASTLINE INSTITUTE OF HIGHER EDUCATION</strong></p>
+    <p><em>I SHALL RISE &amp; SHINE</em></p>
+
+    <div class="warning">
+        <strong>Warning:</strong> Permanent deletion cannot be undone.
+        The student's linked user account may also be deleted.
+    </div>
+
+    <div class="details">
+        <strong>Student:</strong> {{ student }}<br>
+        <strong>Registration Number:</strong> {{ student.registration_number }}<br>
+        <strong>Campus:</strong> {{ student.campus|default:"Not assigned" }}<br>
+        <strong>Status:</strong> {{ student.status }}
+    </div>
+
+    {% if blockers %}
+        <div class="blocked">
+            <strong>Deletion is blocked.</strong>
+            <p>This student has linked academic records:</p>
+            <ul>
+                {% for blocker in blockers %}
+                    <li>{{ blocker }}</li>
+                {% endfor %}
+            </ul>
+            Preserve these records. Resolve the linked records through the appropriate process before considering deletion.
+        </div>
+    {% elif can_delete %}
+        <p>Are you sure you want to permanently delete this student?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Yes, Delete Permanently</button>
+            <a class="cancel" href="{% url 'students:records' %}">Cancel</a>
+        </form>
+    {% else %}
+        <p>Deletion is currently unavailable.</p>
+        <a class="cancel" href="{% url 'students:records' %}">Return to Student Records</a>
+    {% endif %}
+</div>
+</body>
+</html>

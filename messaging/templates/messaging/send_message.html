@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compose Message | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f9;font-family:Arial,sans-serif;color:#26344a}
+header{background:#10213e;color:white;padding:22px 7%}
+header a{color:white;text-decoration:none}
+main{max-width:750px;margin:40px auto;padding:0 20px}
+h1{color:#10213e}
+form{background:white;padding:30px;border-radius:12px;box-shadow:0 4px 18px #10213e12}
+label{display:block;margin:18px 0 8px;font-weight:bold}
+input,select,textarea{width:100%;padding:13px;border:1px solid #d8deea;border-radius:7px;font-size:15px}
+textarea{min-height:180px;resize:vertical}
+button{margin-top:22px;background:#10213e;color:white;border:0;padding:14px 25px;border-radius:7px;cursor:pointer;font-size:15px}
+button:hover{background:#203d68}
+.back{display:inline-block;margin-bottom:20px;color:#10213e;text-decoration:none}
+.error{color:#b42318}
+</style>
+</head>
+<body>
+<header><strong style="color:#e0b85b">FASTLINE INSTITUTE OF HIGHER EDUCATION</strong></header>
+<main>
+<a class="back" href="{% url 'messaging:inbox' %}">← Back to Messages</a>
+<h1>Compose Message</h1>
+<p>Send a private message to your lecturer or institute administrator.</p>
+{% if messages %}
+{% for message in messages %}
+<p class="error">{{ message }}</p>
+{% endfor %}
+{% endif %}
+<form method="post">
+{% csrf_token %}
+<label for="recipient">Recipient</label>
+<select name="recipient" id="recipient" required>
+<option value="">Select recipient</option>
+{% for lecturer in lecturers %}
+<option value="{{ lecturer.id }}">{{ lecturer.get_full_name|default:lecturer.username }} — {{ lecturer.get_role_display }}</option>
+{% endfor %}
+</select>
+<label for="subject">Subject</label>
+<input type="text" name="subject" id="subject" maxlength="200" required placeholder="Enter message subject">
+<label for="body">Message</label>
+<textarea name="body" id="body" required placeholder="Write your message here..."></textarea>
+<button type="submit">Send Message</button>
+</form>
+</main>
+</body>
+</html>

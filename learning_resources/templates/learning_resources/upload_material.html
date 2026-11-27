@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload Learning Material | Fastline</title>
+<style>
+body{margin:0;background:#f4f6fa;font-family:Arial,sans-serif;color:#18243a}
+header{background:#10213e;color:white;padding:25px 6%}
+header small{color:#d9ad50}
+main{max-width:700px;margin:35px auto;padding:0 20px}
+.card{background:white;border:1px solid #e4e9f0;border-radius:13px;padding:28px}
+label{display:block;font-weight:bold;font-size:13px;margin:18px 0 7px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #dce3ed;border-radius:7px;font:inherit}
+button{margin-top:20px;background:#10213e;color:white;padding:13px 20px;border:0;border-radius:7px;cursor:pointer}
+.muted{color:#718096;font-size:14px}
+.error{color:#b42318;background:#fff1f0;padding:12px;border-radius:7px}
+</style>
+</head>
+<body>
+<header><strong>FASTLINE</strong><br><small>INSTITUTE OF HIGHER EDUCATION</small></header>
+<main>
+<div class="card">
+<p class="muted">COURSE UNIT: {{ course.course_code }}</p>
+<h1>Upload Learning Material</h1>
+<h3>{{ course.course_title }}</h3>
+<p class="muted">The material will appear to students enrolled in this course unit once published.</p>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<label>Material title</label>
+<input type="text" name="title" placeholder="e.g. Introduction to Child Development" required>
+<label>Description</label>
+<textarea name="description" rows="4" placeholder="Briefly describe this material"></textarea>
+<label>Material type</label>
+<select name="material_type">
+<option value="NOTES">Lecture Notes</option>
+<option value="PRESENTATION">Presentation</option>
+<option value="READING">Recommended Reading</option>
+<option value="OTHER">Other Learning Material</option>
+</select>
+<label>Select file</label>
+<input type="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" required>
+<button type="submit">Upload Material</button>
+</form>
+<p><a href="{% url 'learning_resources:tutor_materials' %}">Back to tutor workspace</a></p>
+</div>
+</main>
+</body>
+</html>

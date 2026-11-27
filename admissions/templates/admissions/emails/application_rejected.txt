@@ -1,0 +1,23 @@
+FASTLINE INSTITUTE OF HIGHER EDUCATION
+I SHALL RISE & SHINE
+
+APPLICATION UPDATE
+
+Dear {{ application.first_name }} {{ application.last_name }},
+
+Thank you for applying to Fastline Institute of Higher Education.
+
+Following review by the Admissions Office, we regret to inform you that your application has not been approved at this time.
+
+Application reference: {{ application.reference_number }}
+Campus: {{ application.campus.name }}
+Programme: {{ application.programme }}
+
+Reason provided by the Admissions Office:
+{{ application.rejection_reason }}
+
+We appreciate your interest in the Institute and wish you the very best.
+
+Kind regards,
+Admissions Office
+FASTLINE INSTITUTE OF HIGHER EDUCATION

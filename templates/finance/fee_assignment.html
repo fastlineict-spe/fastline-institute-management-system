@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FIMS | Student Fee Assignment</title>
+<style>
+:root{--navy:#10213e;--gold:#d9ad50;--bg:#f3f5f9;--ink:#26344a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px Arial,sans-serif;color:var(--ink)}
+header{background:var(--navy);color:white;padding:22px 5%;border-bottom:4px solid var(--gold)}
+header h1{margin:0;font-size:22px}header p{margin:6px 0 0;color:#f2d58e;font-size:12px;letter-spacing:1px}
+main{max-width:1100px;margin:28px auto;padding:0 16px}.card{background:white;border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:0 5px 22px #10213e12}
+h2{margin:0 0 18px;color:var(--navy)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}input,select{width:100%;padding:12px;border:1px solid #d7deea;border-radius:8px;background:white;font-size:15px}
+button{background:var(--navy);color:white;border:0;padding:13px 20px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:18px}
+.help{font-size:12px;color:#68758a;margin-top:5px}.msg{padding:12px;border-radius:8px;background:#e7f7ec;margin-bottom:12px}
+.errorlist{color:#b42318}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:700px}th,td{text-align:left;padding:11px;border-bottom:1px solid #e7ebf1}th{background:#f4f6fa;color:var(--navy)}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.card{padding:17px}}
+@media print{header{background:white;color:black;border-bottom:2px solid black}header p{color:black}form,.no-print{display:none!important}body{background:white}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1><p>I SHALL RISE &amp; SHINE Â· FINANCE &amp; ACCOUNTS</p></header>
+<main>
+{% for message in messages %}<div class="msg">{{ message }}</div>{% endfor %}
+<section class="card">
+<h2>Student Fee Assignment</h2>
+<p>Assign the amount each student is required to pay. Choose an entire programme/year group or one individual student.</p>
+<form method="post" action="{% url 'finance:fee_assignment_preview' %}">
+{% csrf_token %}
+{{ form.non_field_errors }}
+<div class="grid">
+<div><label>Assignment method</label>{{ form.assignment_type }}{{ form.assignment_type.errors }}</div>
+<div><label>Campus</label>{{ form.campus }}{{ form.campus.errors }}</div>
+<div id="programme-wrap"><label>Programme (for class assignment)</label>{{ form.programme }}{{ form.programme.errors }}</div>
+<div id="year-wrap"><label>Year of study (for class assignment)</label>{{ form.year_of_study }}{{ form.year_of_study.errors }}</div>
+<div id="student-wrap"><label>Individual student (for individual assignment)</label>{{ form.student }}{{ form.student.errors }}</div>
+<div><label>Academic year</label>{{ form.academic_year }}{{ form.academic_year.errors }}</div>
+<div><label>Semester</label>{{ form.semester }}{{ form.semester.errors }}</div>
+<div><label>Amount per student (UGX)</label>{{ form.amount }}{{ form.amount.errors }}</div>
+<div style="grid-column:1/-1"><label>Fee description</label>{{ form.description }}{{ form.description.errors }}</div>
+</div>
+<p class="help">For class assignment, the amount entered is applied separately to every matching active student. Review the programme and year carefully before saving.</p>
+<button type="submit">Assign Fees</button>
+</form>
+</section>
+<section class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+<h2>Recent Fee Assignments</h2><button class="no-print" type="button" onclick="window.print()">Print this page</button>
+</div>
+<div class="tablewrap"><table>
+<thead><tr><th>Date</th><th>Campus</th><th>Type</th><th>Programme / Student</th><th>Academic year</th><th>Semester</th><th>Amount per student</th><th>Students charged</th><th>Created by</th></tr></thead>
+<tbody>{% for a in assignments %}
+<tr><td>{{ a.created_at|date:"d M Y" }}</td><td>{{ a.campus.name }}</td><td>{{ a.get_assignment_type_display }}</td>
+<td>{% if a.student %}{{ a.student.registration_number }}{% else %}{{ a.programme }} Â· Year {{ a.year_of_study }}{% endif %}</td>
+<td>{{ a.academic_year }}</td><td>{{ a.get_semester_display }}</td><td>UGX {{ a.amount|floatformat:0 }}</td><td>{{ a.student_charges.count }}</td><td>{{ a.created_by.username }}</td></tr>
+{% empty %}<tr><td colspan="9">No fee assignments have been created yet.</td></tr>{% endfor %}</tbody>
+</table></div>
+</section>
+</main>
+<script>
+const type=document.getElementById("id_assignment_type");
+function toggleFields(){const individual=type.value==="INDIVIDUAL";document.getElementById("student-wrap").style.display=individual?"block":"none";document.getElementById("programme-wrap").style.display=individual?"none":"block";document.getElementById("year-wrap").style.display=individual?"none":"block";}
+type.addEventListener("change",toggleFields);toggleFields();
+</script>
+</body></html>
+

@@ -1,0 +1,197 @@
+﻿<style>
+.marks-page {
+    background: #f3f6fb;
+    min-height: 80vh;
+    padding: 25px;
+}
+.marks-header {
+    background: linear-gradient(120deg, #071943, #12358b);
+    color: white;
+    padding: 28px;
+    border-radius: 13px;
+    margin-bottom: 22px;
+}
+.marks-header h2 { margin: 0 0 8px; }
+.marks-panel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(7,25,67,.06);
+    margin-bottom: 20px;
+}
+.marks-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+.marks-table th, .marks-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e6ebf2;
+    text-align: left;
+}
+.marks-table th {
+    background: #eef3fb;
+    color: #071943;
+}
+.marks-input {
+    width: 90px;
+    padding: 9px;
+    border: 1px solid #ccd5e2;
+    border-radius: 6px;
+}
+.action-button {
+    border: 0;
+    background: #12358b;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+.submit-button { background: #16834a; }
+.back-link { color: white; text-decoration: none; }
+.status-label {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 5px;
+    background: #eef2ff;
+    color: #12358b;
+    font-size: 12px;
+}
+@media(max-width:700px) {
+    .marks-page { padding: 10px; }
+    .marks-header { padding: 18px; }
+}
+</style>
+
+<div class="marks-page">
+
+    <div class="marks-header">
+        <a class="back-link" href="{% url 'results:dashboard' %}">← Results Dashboard</a>
+        <h2>{{ course.course_code }} - {{ course.course_title }}</h2>
+        <p>FASTLINE INSTITUTE OF HIGHER EDUCATION</p>
+        <p>I SHALL RISE &amp; SHINE</p>
+        <p>{{ course.campus.name|default:"Campus not assigned" }}</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="marks-panel">
+        <h3>Assessment Structure</h3>
+        <p><strong>Coursework:</strong> 40 marks</p>
+        <p><strong>Examination:</strong> 60 marks</p>
+        <p><strong>Total:</strong> 100 marks</p>
+        <p><strong>Semester:</strong> {{ course.semester }}</p>
+        <p><strong>Programme:</strong> {{ course.programme }}</p>
+        <p><strong>Credit Units:</strong> {{ course.credit_units }}</p>
+    </div>
+
+    <div class="marks-panel">
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="academic_year"><strong>Academic Year</strong></label>
+            <input
+                type="text"
+                id="academic_year"
+                name="academic_year"
+                value="{{ academic_year }}"
+                placeholder="Example: 2026/2027"
+                required
+                style="padding:10px;border:1px solid #ccd5e2;border-radius:6px;margin:10px 0 20px;"
+            >
+
+            <div style="overflow-x:auto;">
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Registration Number</th>
+                            <th>Student Name</th>
+                            <th>Coursework /40</th>
+                            <th>Examination /60</th>
+                            <th>Total /100</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ row.student.registration_number }}</td>
+                            <td>
+                                {% if row.student.user %}
+                                    {{ row.student.user.get_full_name|default:row.student.user.username }}
+                                {% else %}
+                                    Student
+                                {% endif %}
+                            </td>
+                            <td>
+                                <input class="marks-input"
+                                    type="number"
+                                    name="coursework_{{ row.student.id }}"
+                                    min="0" max="40" step="0.01"
+                                    value="{% if row.result %}{{ row.result.coursework_marks }}{% endif %}"
+                                    {% if row.result and row.result.status != "DRAFT" and row.result.status != "REJECTED" %}disabled{% endif %}
+                                >
+                            </td>
+                            <td>
+                                <input class="marks-input"
+                                    type="number"
+                                    name="examination_{{ row.student.id }}"
+                                    min="0" max="60" step="0.01"
+                                    value="{% if row.result %}{{ row.result.examination_marks }}{% endif %}"
+                                    {% if row.result and row.result.status != "DRAFT" and row.result.status != "REJECTED" %}disabled{% endif %}
+                                >
+                            </td>
+                            <td>
+                                {% if row.result %}
+                                    {{ row.result.total_marks }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.result %}
+                                    <span class="status-label">{{ row.result.get_status_display }}</span>
+                                    {% if row.result.rejection_reason %}
+                                        <br><small>{{ row.result.rejection_reason }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="status-label">Not entered</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">No active students are enrolled in this course.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:20px;">
+                <button type="submit" class="action-button">
+                    Save Draft Marks
+                </button>
+            </div>
+        </form>
+
+        {% if rows %}
+        <form method="post" action="{% url 'results:submit_course_results' course.id %}" style="margin-top:15px;">
+            {% csrf_token %}
+            <input type="hidden" name="academic_year" value="{{ academic_year }}">
+            <button type="submit" class="action-button submit-button"
+                {% if not academic_year %}disabled{% endif %}>
+                Submit Course Results for Approval
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+</div>
+

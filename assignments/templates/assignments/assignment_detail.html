@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignment Details | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;font-family:Arial,sans-serif;color:#17243a}
+header{background:#142747;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-size:19px;font-weight:bold}
+.brand small{display:block;color:#d9ad50;font-size:11px;margin-top:5px}
+header a{color:white;text-decoration:none}
+.container{max-width:900px;margin:35px auto;padding:0 20px}
+.panel{background:white;border:1px solid #e4e9f0;border-radius:12px;padding:25px;margin-bottom:18px}
+h1{margin-top:0}
+.muted{color:#718096;font-size:13px}
+.info{display:flex;gap:25px;flex-wrap:wrap;margin:18px 0}
+.instructions{line-height:1.8;white-space:pre-wrap}
+.btn{display:inline-block;background:#142747;color:white;text-decoration:none;padding:12px 20px;border:0;border-radius:7px;font-weight:bold;cursor:pointer}
+input[type=file]{display:block;width:100%;padding:14px;border:1px dashed #9ba9bb;border-radius:8px;margin:15px 0}
+label{font-weight:bold;display:block;margin-top:15px}
+.error{background:#ffe8e8;color:#9c2525;padding:13px;border-radius:7px;margin-bottom:15px}
+.success{background:#e1f5e9;color:#176b3b;padding:15px;border-radius:8px;margin:15px 0}
+.file{padding:10px;background:#f4f6fa;border-radius:7px;margin:8px 0}
+a{color:#173b70}
+footer{text-align:center;padding:30px;color:#8792a3;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">FASTLINE <small>INSTITUTE OF HIGHER EDUCATION</small></div>
+<a href="{% url 'assignments:student_assignments' %}">Back to My Assignments</a>
+</header>
+<div class="container">
+<div class="panel">
+<h1>{{ assignment.title }}</h1>
+<p class="muted">{{ assignment.course.course_code }} — {{ assignment.course.course_title }}</p>
+<div class="info">
+<span><strong>Deadline:</strong> {{ assignment.due_date|date:"d M Y, H:i" }}</span>
+<span><strong>Maximum marks:</strong> {{ assignment.max_marks }}</span>
+</div>
+<h3>Coursework Instructions</h3>
+<div class="instructions">{{ assignment.instructions }}</div>
+{% if assignment.attachment %}
+<p><strong>Assignment document:</strong> <a href="{{ assignment.attachment.url }}" target="_blank">Download assignment attachment</a></p>
+{% endif %}
+</div>
+
+<div class="panel">
+<h2>Submit Your Coursework</h2>
+
+{% if submission %}
+<div class="success">
+<strong>Submission recorded.</strong><br>
+Submitted: {{ submission.submitted_at|date:"d M Y, H:i" }}<br>
+Status: {{ submission.get_status_display }}
+</div>
+<h3>Your uploaded files</h3>
+{% for uploaded in submission.files.all %}
+<div class="file">
+<a href="{{ uploaded.file.url }}" target="_blank">{{ uploaded.original_name|default:uploaded.file.name }}</a>
+</div>
+{% empty %}
+<p class="muted">No files are attached.</p>
+{% endfor %}
+
+{% if submission.marks_awarded != None %}
+<h3>Lecturer's Assessment</h3>
+<p><strong>Marks:</strong> {{ submission.marks_awarded }} / {{ assignment.max_marks }}</p>
+{% if submission.feedback %}
+<p><strong>Feedback:</strong></p>
+<p>{{ submission.feedback|linebreaksbr }}</p>
+{% endif %}
+{% endif %}
+{% endif %}
+
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+{% if not submission or submission.status == "SUBMITTED" or submission.status == "LATE" %}
+{% if now <= assignment.due_date or assignment.allow_late_submissions %}
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<label for="files">Choose coursework file(s)</label>
+<input type="file" id="files" name="files" multiple required>
+<p class="muted">Accepted: PDF, Word, PowerPoint, Excel, TXT and images. Maximum 15 MB per file.</p>
+<button class="btn" type="submit">{% if submission %}Replace Coursework{% else %}Submit Coursework{% endif %}</button>
+</form>
+{% else %}
+<p class="muted">The submission deadline has passed. Late submissions are not allowed.</p>
+{% endif %}
+{% else %}
+<p class="muted">This coursework has been marked or returned. Contact your lecturer if you need to resubmit.</p>
+{% endif %}
+</div>
+</div>
+<footer>Fastline Institute of Higher Education · Learning Without Boundaries.</footer>
+</body>
+</html>

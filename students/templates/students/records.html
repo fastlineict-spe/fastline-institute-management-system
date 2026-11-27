@@ -1,0 +1,146 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Records | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f9;color:#17243b;font-family:Arial,sans-serif}
+.header{background:#10213e;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.brand strong{font-size:19px;letter-spacing:.5px}
+.brand small{display:block;color:#e0bd70;margin-top:5px;letter-spacing:2px}
+.header a{color:white;text-decoration:none;font-size:14px}
+.container{max-width:1400px;margin:38px auto;padding:0 20px}
+.eyebrow{color:#ad812d;font-size:12px;font-weight:bold;letter-spacing:2px}
+h1{margin:9px 0;font-size:29px;color:#142747}
+.subtitle{color:#738096;line-height:1.6}
+.panel{background:white;border:1px solid #e5e9f0;border-radius:13px;box-shadow:0 10px 35px #17243b0c;padding:25px;margin-top:24px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.search-form{display:flex;gap:10px;flex-wrap:wrap;flex:1}
+input,select{padding:12px;border:1px solid #dce2eb;border-radius:7px;font-size:14px;color:#17243b;background:white}
+input{min-width:220px;flex:1}
+button,.register,.action{border:0;border-radius:7px;padding:10px 13px;font-weight:bold;cursor:pointer;text-decoration:none;font-size:12px;display:inline-block}
+.search-button{background:#142747;color:white}
+.register{background:#d9ad50;color:#10213e}
+.summary{color:#738096;font-size:14px;margin:22px 0 12px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+th{text-align:left;background:#f7f8fb;color:#66748a;font-size:12px;text-transform:uppercase;letter-spacing:.6px;padding:15px 12px}
+td{padding:15px 12px;border-bottom:1px solid #edf0f4;font-size:13px}
+.name{font-weight:bold;color:#142747}
+.status{display:inline-block;padding:6px 10px;border-radius:20px;background:#edf3ef;color:#287447;font-size:12px;font-weight:bold}
+.status-inactive{background:#fff0e8;color:#9a4a20}
+.status-other{background:#edf0f5;color:#536176}
+.empty{text-align:center;padding:40px;color:#738096}
+.messages{padding:13px 16px;background:#fff2e8;color:#8a421c;border-radius:7px;margin-bottom:18px}
+.actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.activate{background:#e8f4ec;color:#246b3b}
+.deactivate{background:#fff1df;color:#87551b}
+.delete{background:#fce9e9;color:#a52d2d}
+.muted{color:#738096}
+@media(max-width:650px){.header{align-items:flex-start;flex-direction:column}.panel{padding:17px}.search-form{width:100%}.search-form input,.search-form select{width:100%}}
+</style>
+</head>
+<body>
+<header class="header">
+    <div class="brand">
+        <strong>FASTLINE INSTITUTE OF HIGHER EDUCATION</strong>
+        <small>I SHALL RISE &amp; SHINE</small>
+    </div>
+    <a href="{% url 'dashboard:administrator' %}">Administrator Dashboard</a>
+</header>
+
+<main class="container">
+    <span class="eyebrow">ADMINISTRATION / STUDENT MANAGEMENT</span>
+    <h1>Student Records</h1>
+    <p class="subtitle">Manage student registration, campus status and student accounts.</p>
+
+    <section class="panel">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="toolbar">
+            <form method="GET" class="search-form">
+                <input type="search" name="q" value="{{ search_query }}" placeholder="Search name, admission number, email or programme">
+                <select name="status">
+                    <option value="">All statuses</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button class="search-button" type="submit">Search</button>
+            </form>
+            <a class="register" href="{% url 'students:register' %}">+ Register Student</a>
+        </div>
+
+        <p class="summary">
+            Showing {{ students|length }} matching student{{ students|length|pluralize }}.
+            Total matching records: {{ total_students }}.
+        </p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Admission Number</th>
+                        <th>Student</th>
+                        <th>Campus</th>
+                        <th>Email</th>
+                        <th>Programme</th>
+                        <th>Year</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td><strong>{{ student.registration_number }}</strong></td>
+                        <td>
+                            <div class="name">{% if student.user %}{{ student.user.get_full_name|default:student.user.username }}{% else %}Student account unavailable{% endif %}</div>
+                        </td>
+                        <td>{{ student.campus.name|default:"Not assigned" }}</td>
+                        <td>{% if student.user %}{{ student.user.email|default:"—" }}{% else %}—{% endif %}</td>
+                        <td>{{ student.programme }}</td>
+                        <td>Year {{ student.year_of_study }}</td>
+                        <td>
+                            <span class="status {% if student.status == 'INACTIVE' %}status-inactive{% elif student.status != 'ACTIVE' %}status-other{% endif %}">
+                                {{ student.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                {% if student.status == 'ACTIVE' %}
+                                <form method="POST" action="{% url 'students:status' student.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="INACTIVE">
+                                    <button class="action deactivate" type="submit">Deactivate</button>
+                                </form>
+                                {% elif student.status == 'INACTIVE' %}
+                                <form method="POST" action="{% url 'students:status' student.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="ACTIVE">
+                                    <button class="action activate" type="submit">Reactivate</button>
+                                </form>
+                                {% endif %}
+                                <a class="action delete" href="{% url 'students:delete' student.pk %}">Delete Permanently</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="empty">No student records match your search.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

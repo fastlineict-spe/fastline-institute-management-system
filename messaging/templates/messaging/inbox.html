@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f5f9;color:#26344a}
+header{background:#10213e;color:white;padding:24px 7%;display:flex;justify-content:space-between;align-items:center}
+header h2{margin:0;color:#e0b85b}
+header a{color:white;text-decoration:none}
+main{max-width:1050px;margin:35px auto;padding:0 20px}
+h1{color:#10213e}
+.tabs{margin:25px 0}
+.tabs a{background:#10213e;color:white;padding:12px 18px;border-radius:7px;text-decoration:none}
+.card{background:white;padding:20px;margin-bottom:12px;border-radius:10px;border:1px solid #e5e9f0;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.card a{color:#10213e;text-decoration:none}
+.card p{color:#667085;margin-bottom:0}
+small{color:#8a94a6}
+.empty{background:white;padding:35px;text-align:center;border-radius:10px;color:#667085}
+.delete-form{margin:0}
+.delete-btn{background:#b42318;color:white;border:0;padding:9px 13px;border-radius:6px;cursor:pointer}
+.content{flex:1;min-width:0}
+.alert{background:#e9f7ef;color:#176b3a;padding:12px;border-radius:7px;margin-bottom:15px}
+</style>
+</head>
+<body>
+<header>
+<h2>FASTLINE</h2>
+<a href="/students/dashboard/">Student Workspace</a>
+</header>
+<main>
+<h1>Messages</h1>
+<p>Communicate with your lecturers and institute administrators.</p>
+{% if messages %}
+{% for notice in messages %}
+<div class="alert">{{ notice }}</div>
+{% endfor %}
+{% endif %}
+<div class="tabs">
+<a href="{% url 'messaging:send_message' %}">+ Compose Message</a>
+</div>
+<h2>Inbox</h2>
+{% for message in received %}
+<div class="card">
+<div class="content">
+<a href="{% url 'messaging:conversation' message.id %}">
+<strong>{{ message.subject }}</strong>
+{% if not message.is_read %}<span style="color:#c18b25"> • New</span>{% endif %}
+</a>
+<p>From: {{ message.sender.get_full_name|default:message.sender.username }}</p>
+<small>{{ message.sent_at|date:"d M Y, H:i" }}</small>
+</div>
+<form class="delete-form" method="post" action="{% url 'messaging:delete_message' message.id %}">
+{% csrf_token %}
+<button class="delete-btn" type="submit">Delete</button>
+</form>
+</div>
+{% empty %}
+<div class="empty">Your inbox is empty.</div>
+{% endfor %}
+<h2 style="margin-top:35px">Sent Messages</h2>
+{% for message in sent %}
+<div class="card">
+<div class="content">
+<a href="{% url 'messaging:conversation' message.id %}"><strong>{{ message.subject }}</strong></a>
+<p>To: {{ message.recipient.get_full_name|default:message.recipient.username }}</p>
+<small>{{ message.sent_at|date:"d M Y, H:i" }}</small>
+</div>
+<form class="delete-form" method="post" action="{% url 'messaging:delete_message' message.id %}">
+{% csrf_token %}
+<button class="delete-btn" type="submit">Delete</button>
+</form>
+</div>
+{% empty %}
+<div class="empty">You have not sent any messages yet.</div>
+{% endfor %}
+</main>
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>

@@ -1,0 +1,76 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}FIMS | Fastline Institute{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/fastline-theme.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="fims-shell">
+
+    <aside class="fims-sidebar">
+        <div class="brand-area">
+            <img src="{% static 'images/fastline-logo.jpg' %}" alt="Fastline Institute Logo">
+            <div class="brand-name">FASTLINE</div>
+            <div class="brand-subtitle">INSTITUTE OF HIGHER EDUCATION</div>
+            <div class="brand-motto">I SHALL RISE &amp; SHINE</div>
+        </div>
+
+        <div class="sidebar-heading">MAIN NAVIGATION</div>
+        <nav class="sidebar-navigation">
+            {% block navigation %}{% endblock %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <span>FIMS</span>
+            <small>Learning Without Boundaries.</small>
+        </div>
+    </aside>
+
+    <div class="fims-main">
+        <header class="fims-topbar">
+            <div>
+                <div class="topbar-institute">FASTLINE INSTITUTE OF HIGHER EDUCATION</div>
+                <div class="topbar-title">{% block page_heading %}Institution Management System{% endblock %}</div>
+            </div>
+            <div class="topbar-user">
+                <span class="user-indicator"></span>
+                {% if request.user.is_authenticated %}
+                    {{ request.user.get_full_name|default:request.user.username }}
+                {% else %}
+                    FIMS
+                {% endif %}
+            </div>
+        </header>
+
+        <main class="fims-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="fims-footer">
+            FASTLINE INSTITUTE OF HIGHER EDUCATION
+            <span> | I SHALL RISE &amp; SHINE</span>
+        </footer>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

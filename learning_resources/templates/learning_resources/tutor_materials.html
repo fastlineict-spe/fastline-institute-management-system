@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutor Workspace | Fastline</title>
+<style>
+body{margin:0;background:#f4f6fa;font-family:Arial,sans-serif;color:#18243a}
+header{background:#10213e;color:white;padding:25px 6%}
+header small{color:#d9ad50}
+main{max-width:1050px;margin:35px auto;padding:0 20px}
+.card{background:white;border:1px solid #e4e9f0;border-radius:12px;padding:22px;margin:15px 0}
+button,a.btn{display:inline-block;background:#10213e;color:white;padding:11px 16px;border:0;border-radius:7px;text-decoration:none}
+.muted{color:#718096;font-size:14px}
+</style>
+</head>
+<body>
+<header><strong>FASTLINE</strong><br><small>INSTITUTE OF HIGHER EDUCATION</small></header>
+<main>
+<h1>Tutor Workspace</h1>
+<p class="muted">Select one of your assigned course units to upload learning materials.</p>
+{% for course in courses %}
+<div class="card">
+<div class="muted">{{ course.course_code }} | Year {{ course.year_of_study }} | {{ course.get_semester_display }}</div>
+<h2>{{ course.course_title }}</h2>
+<p class="muted">{{ course.programme }} | {{ course.credit_units }} credit units</p>
+<a class="btn" href="{% url 'learning_resources:upload_material' course.id %}">Upload learning material</a>
+</div>
+{% empty %}
+<div class="card"><h3>No course units assigned</h3><p class="muted">Contact the academic administrator to have course units assigned to your account.</p></div>
+{% endfor %}
+<p><a href="/accounts/logout/">Sign out</a></p>
+</main>
+</body>
+</html>

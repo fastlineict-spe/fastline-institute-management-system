@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Admissions Register | FIMS{% endblock %}
+{% block navigation %}
+{% if dashboard_campus_code %}<a href="{% url 'dashboard:campus_dashboard' dashboard_campus_code %}">Campus Dashboard</a>{% else %}<a href="{% url 'dashboard:administrator' %}">Dashboard</a>{% endif %}
+<a href="{% url 'students:records' %}">Student Records</a>
+<a href="{% url 'admissions:list' %}">Admissions</a>
+{% endblock %}
+{% block page_heading %}Admissions Management{% endblock %}
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        <div>
+            <h2>Admissions Register</h2>
+            <p class="text-muted">Review and process student applications.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            {% if dashboard_campus_code %}
+            <a href="{% url 'dashboard:campus_dashboard' dashboard_campus_code %}" class="btn btn-outline-secondary">Back to Campus Dashboard</a>
+            {% endif %}
+            <a href="{% url 'admissions:apply' %}" target="_blank" class="btn btn-outline-primary">Open Public Application</a>
+            <a href="{% url 'admissions:pdf' %}?q={{ search|urlencode }}&amp;status={{ selected_status|urlencode }}{% if selected_campus %}&amp;campus={{ selected_campus|urlencode }}{% endif %}" class="btn btn-danger">Download Applications PDF</a>
+        </div>
+    </div>
+    <form method="get" class="card card-body mb-3">
+        <div class="row g-2">
+            <div class="col-md-5">
+                <input name="q" value="{{ search }}" class="form-control" placeholder="Search reference, applicant, email, phone or programme">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">All statuses</option>
+                    <option value="PENDING" {% if selected_status == "PENDING" %}selected{% endif %}>Pending</option>
+                    <option value="APPROVED" {% if selected_status == "APPROVED" %}selected{% endif %}>Approved</option>
+                    <option value="REJECTED" {% if selected_status == "REJECTED" %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            {% if is_central_admin %}
+            <div class="col-md-2">
+                <select name="campus" class="form-select">
+                    <option value="">All campuses</option>
+                    {% for campus in campuses %}
+                    <option value="{{ campus.code }}">{{ campus.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Reference</th><th>Applicant</th><th>Campus</th><th>Programme</th>
+                        <th>Phone</th><th>Date Applied</th><th>Status</th><th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td><strong>{{ application.reference_number }}</strong></td>
+                        <td>{{ application.first_name }} {{ application.last_name }}<br><small class="text-muted">{{ application.email }}</small></td>
+                        <td>{{ application.campus.name }}</td>
+                        <td>{{ application.programme }}</td>
+                        <td>{{ application.phone_number }}</td>
+                        <td>{{ application.date_submitted|date:"d M Y" }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <a class="btn btn-sm btn-outline-primary" href="{% url 'admissions:detail' application.pk %}">Review</a>
+                                <form method="post" action="{% url 'admissions:delete' application.pk %}" onsubmit="return confirm('Permanently delete this application? Any linked student record and account will be retained.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-4 text-muted">No applications found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

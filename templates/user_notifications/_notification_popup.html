@@ -1,0 +1,21 @@
+{% if request.user.is_authenticated and global_unread_count %}
+<div id="global-notification-panel" style="position:fixed;right:22px;bottom:22px;z-index:9999;width:340px;max-width:calc(100vw - 30px);font-family:Arial,sans-serif;">
+    <div style="background:#10213e;color:white;padding:14px 18px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+        <strong>New notifications ({{ global_unread_count }})</strong>
+        <button type="button" onclick="document.getElementById('global-notification-panel').style.display='none'" style="background:none;border:0;color:white;font-size:22px;cursor:pointer;">&times;</button>
+    </div>
+
+    <div style="background:white;box-shadow:0 5px 25px rgba(0,0,0,.18);border-radius:0 0 12px 12px;overflow:hidden;">
+        {% for notification in global_notifications %}
+        <div style="padding:14px 16px;border-bottom:1px solid #e8edf3;">
+            <strong style="color:#10213e;">{{ notification.title }}</strong>
+            <p style="font-size:13px;color:#526071;margin:7px 0;">{{ notification.message|truncatechars:120 }}</p>
+            <small style="color:#8993a1;">{{ notification.date_created|date:"d M Y, H:i" }}</small>
+        </div>
+        {% endfor %}
+        <a href="{% url 'user_notifications:student_notifications' %}" style="display:block;text-align:center;padding:13px;background:#f3f6fa;color:#10213e;text-decoration:none;font-weight:bold;">
+            Open notification centre
+        </a>
+    </div>
+</div>
+{% endif %}

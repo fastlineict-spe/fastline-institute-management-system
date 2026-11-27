@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confirm Permanent Lecturer Deletion</title>
+<style>
+body{margin:0;background:#f3f6fb;font-family:Arial,sans-serif;color:#18243b}
+header{background:#101d38;color:white;padding:22px 5%;display:flex;justify-content:space-between}
+header a{color:#f5c65c;text-decoration:none}
+main{max-width:700px;margin:45px auto;padding:20px}
+.panel{background:white;border-radius:12px;padding:28px;box-shadow:0 3px 14px #14213b12}
+button,.btn{border:0;border-radius:7px;padding:12px 17px;text-decoration:none;cursor:pointer;display:inline-block}
+.danger{background:#a83232;color:white}.muted{background:#64748b;color:white}
+.warning{background:#fff1e8;padding:15px;border-radius:8px;color:#8a321d;line-height:1.5}
+</style></head><body>
+<header><strong>FASTLINE LMS | LECTURER MANAGEMENT</strong>
+<a href="{% url 'lecturers:list' %}">← Back to Lecturers</a></header>
+<main><div class="panel">
+<h1>Delete Lecturer Permanently</h1>
+<p>You are about to permanently delete:
+<strong>{{ lecturer.get_full_name|default:lecturer.username }}</strong>.</p>
+<div class="warning">
+<strong>Warning:</strong> This action cannot be undone. The lecturer account will be removed.
+If linked assignments, marks, courses or other dependent records are found, the system
+will block deletion and preserve the account and records.
+</div>
+<p>To prevent sign-in while keeping academic history, use Deactivate instead.</p>
+<form method="post">{% csrf_token %}
+<button class="danger" type="submit">Confirm Permanent Delete</button>
+<a class="btn muted" href="{% url 'lecturers:list' %}">Cancel</a>
+</form></div></main></body></html>

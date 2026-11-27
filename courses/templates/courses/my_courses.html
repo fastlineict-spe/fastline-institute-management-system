@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Course Units | Fastline</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#18243a}
+.sidebar{position:fixed;top:0;bottom:0;left:0;width:245px;background:#10213e;color:white;padding:28px 20px}
+.brand{font-size:20px;font-weight:bold;line-height:1.5}
+.brand small{display:block;font-size:11px;color:#d9ad50;font-weight:normal}
+.nav{margin-top:45px}
+.nav a{display:block;color:#dbe3ef;text-decoration:none;padding:14px 12px;border-radius:8px;margin-bottom:7px;font-size:14px}
+.nav a.active,.nav a:hover{background:#243b60;color:#fff}
+.main{margin-left:245px;padding:35px;max-width:1450px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+h1{margin:0;font-size:28px}
+.muted{color:#718096;font-size:14px}
+.panel{background:white;border:1px solid #e5eaf1;border-radius:13px;padding:22px;margin-top:25px}
+.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.year{display:block;padding:19px;border:1px solid #e2e8f0;border-radius:10px;text-decoration:none;color:#18243a}
+.year.selected{border:2px solid #d9ad50;background:#fffaf0}
+.year strong{font-size:18px}
+.semesters{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.semesters a{padding:12px 18px;border:1px solid #dce3ed;border-radius:8px;text-decoration:none;color:#34445d;font-size:13px}
+.semesters a.selected{background:#10213e;color:white;border-color:#10213e}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:17px;margin-top:18px}
+.course{background:white;border:1px solid #e4e9f0;border-radius:12px;padding:21px}
+.code{color:#a77b20;font-size:12px;font-weight:bold;letter-spacing:.5px}
+.course h3{font-size:17px;margin:10px 0}
+.course p{font-size:13px;color:#718096;line-height:1.6}
+.course a{display:inline-block;margin-top:12px;background:#10213e;color:white;padding:11px 15px;border-radius:7px;text-decoration:none;font-size:13px}
+.empty{text-align:center;padding:45px 20px;color:#718096;background:white;border:1px dashed #cbd5e1;border-radius:12px;margin-top:20px}
+.count{background:#f5f0e5;color:#89651c;border-radius:20px;padding:7px 12px;font-size:12px}
+@media(max-width:750px){.sidebar{position:relative;width:100%;padding:18px}.nav{margin-top:15px;display:flex;gap:5px;overflow:auto}.nav a{white-space:nowrap}.main{margin:0;padding:20px}.year-grid{grid-template-columns:1fr}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="brand">FASTLINE <small>INSTITUTE OF HIGHER EDUCATION</small></div>
+<div class="nav">
+<a href="/students/dashboard/">Overview</a>
+<a class="active" href="/courses/my-courses/">My Course Units</a>
+<a href="/resources/tutor/">Learning Resources</a>
+<a href="/accounts/logout/">Sign Out</a>
+</div>
+</aside>
+<main class="main">
+<div class="top">
+<div>
+<h1>My Course Units</h1>
+<p class="muted">Your academic units, organised by year and semester.</p>
+</div>
+<span class="count">{{ total_courses }} COURSE UNITS</span>
+</div>
+
+<section class="panel">
+<h2 style="margin-top:0;font-size:18px">Select your year of study</h2>
+<div class="year-grid">
+<a class="year {% if selected_year == 1 %}selected{% endif %}" href="?year=1&semester={{ selected_semester|urlencode }}">
+<strong>Year 1</strong><p class="muted">First academic year</p>
+</a>
+<a class="year {% if selected_year == 2 %}selected{% endif %}" href="?year=2&semester={{ selected_semester|urlencode }}">
+<strong>Year 2</strong><p class="muted">Second academic year</p>
+</a>
+</div>
+<h2 style="font-size:18px;margin-top:28px">Choose semester</h2>
+<div class="semesters">
+<a class="{% if selected_semester == 'SEMESTER 1' %}selected{% endif %}" href="?year={{ selected_year }}&semester=SEMESTER%201">Semester 1</a>
+<a class="{% if selected_semester == 'SEMESTER 2' %}selected{% endif %}" href="?year={{ selected_year }}&semester=SEMESTER%202">Semester 2</a>
+<a class="{% if selected_semester == 'SEMESTER 3' %}selected{% endif %}" href="?year={{ selected_year }}&semester=SEMESTER%203">Semester 3</a>
+</div>
+</section>
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:30px;flex-wrap:wrap">
+<h2 style="font-size:20px;margin:0">Year {{ selected_year }} - {{ selected_semester|title }}</h2>
+<span class="muted">Enrolled course units</span>
+</div>
+
+{% if enrollments %}
+<div class="course-grid">
+{% for enrollment in enrollments %}
+<div class="course">
+<div class="code">{{ enrollment.course.course_code }}</div>
+<h3>{{ enrollment.course.course_title }}</h3>
+<p>{{ enrollment.course.description|default:"Course unit description will be provided by the institution."|truncatewords:20 }}</p>
+<p><strong>Programme:</strong> {{ enrollment.course.programme }}</p>
+<p><strong>Credit units:</strong> {{ enrollment.course.credit_units }}</p>
+<p><strong>Tutor:</strong> {{ enrollment.course.lecturer.get_full_name|default:"Not yet assigned" }}</p>
+<a href="{% url 'learning_resources:course_materials' enrollment.course.id %}">Open course materials</a>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty">
+<h3>No course units found</h3>
+<p>No course units have been enrolled for this year and semester yet.</p>
+<p>Please contact the academic administrator if you believe this is an error.</p>
+</div>
+{% endif %}
+</main>
+{% include "user_notifications/_notification_popup.html" %}
+</body>
+</html>

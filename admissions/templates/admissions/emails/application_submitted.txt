@@ -1,0 +1,28 @@
+FASTLINE INSTITUTE OF HIGHER EDUCATION
+I SHALL RISE & SHINE
+
+APPLICATION SUCCESSFULLY RECEIVED
+
+Dear {{ application.first_name }} {{ application.last_name }},
+
+Thank you for applying to Fastline Institute of Higher Education. Your application has been successfully received and is awaiting review.
+
+YOUR APPLICATION REFERENCE NUMBER:
+{{ application.reference_number }}
+
+Please keep this reference number safe and quote it in all admissions enquiries.
+
+APPLICATION DETAILS
+Applicant: {{ application.first_name }} {{ application.last_name }}
+Campus: {{ application.campus.name }}
+Programme: {{ application.programme }}
+Year of study: {{ application.year_of_study }}
+Status: Pending Review
+
+Our Admissions Office will review your application. You will receive another email when a decision has been made.
+
+Kind regards,
+Admissions Office
+FASTLINE INSTITUTE OF HIGHER EDUCATION
+Kampala (Namugongo) Campus | Busia Campus
+I SHALL RISE & SHINE

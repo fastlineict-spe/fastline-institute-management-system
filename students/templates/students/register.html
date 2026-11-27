@@ -1,0 +1,153 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register Student | Fastline Institute</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f9;color:#17243b;font-family:Arial,sans-serif}
+.header{background:#10213e;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.brand strong{font-size:19px;letter-spacing:.5px}
+.brand small{display:block;color:#e0bd70;margin-top:5px;letter-spacing:2px}
+.header a{color:white;text-decoration:none;font-size:14px}
+.container{max-width:1050px;margin:38px auto;padding:0 20px}
+.heading{margin-bottom:22px}
+.eyebrow{color:#ad812d;font-size:12px;font-weight:bold;letter-spacing:2px}
+h1{margin:9px 0;font-size:29px;color:#142747}
+.subtitle{color:#738096;line-height:1.6}
+.panel{background:white;border:1px solid #e5e9f0;border-radius:13px;box-shadow:0 10px 35px #17243b0c;padding:30px}
+.section-title{font-size:16px;color:#142747;border-bottom:1px solid #edf0f4;padding-bottom:13px;margin:5px 0 22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 22px}
+.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:8px;color:#34435a}
+.field input,.field select,.field textarea{width:100%;padding:13px;border:1px solid #dce2eb;border-radius:7px;background:#fff;font-size:14px;color:#17243b;outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#b58a35;box-shadow:0 0 0 3px #b58a351c}
+.field textarea{min-height:85px;resize:vertical}
+.full{grid-column:1/-1}
+.required{color:#b04444}
+.note{background:#f7f8fb;border-left:3px solid #c49a48;padding:13px 15px;color:#66748a;font-size:13px;line-height:1.6;margin:24px 0}
+.messages{padding:13px 16px;background:#fff2e8;color:#8a421c;border-radius:7px;margin-bottom:18px}
+.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:25px}
+button{border:0;border-radius:7px;padding:14px 23px;font-weight:bold;cursor:pointer;font-size:14px}
+.submit{background:#142747;color:white}
+.submit:hover{background:#b58a35;color:#142747}
+.cancel{background:#edf0f5;color:#34435a}
+@media(max-width:650px){.header{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}.full{grid-column:auto}.panel{padding:20px}.actions{flex-direction:column}.actions button{width:100%}}
+</style>
+</head>
+<body>
+<header class="header">
+    <div class="brand">
+        <strong>FASTLINE INSTITUTE OF HIGHER EDUCATION</strong>
+        <small>LEARNING WITHOUT BOUNDARIES</small>
+    </div>
+    <a href="{% url 'dashboard:administrator' %}">← Administrator Dashboard</a>
+</header>
+
+<main class="container">
+    <div class="heading">
+        <span class="eyebrow">STUDENT MANAGEMENT / ADMISSIONS</span>
+        <h1>Register a New Student</h1>
+        <p class="subtitle">Create an official student record and generate an admission number.</p>
+    </div>
+
+    <section class="panel">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <h2 class="section-title">01. Personal Information</h2>
+            <div class="grid">
+                <div class="field">
+                    <label>First Name <span class="required">*</span></label>
+                    <input type="text" name="first_name" autocomplete="given-name" required>
+                </div>
+                <div class="field">
+                    <label>Last Name <span class="required">*</span></label>
+                    <input type="text" name="last_name" autocomplete="family-name" required>
+                </div>
+                <div class="field">
+                    <label>Gender <span class="required">*</span></label>
+                    <select name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Date of Birth</label>
+                    <input type="date" name="date_of_birth">
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top:32px">02. Contact Information</h2>
+            <div class="grid">
+                <div class="field">
+                    <label>Active Email Address <span class="required">*</span></label>
+                    <input type="email" name="email" placeholder="student@example.com" autocomplete="email" required>
+                </div>
+                <div class="field">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone_number" placeholder="+256...">
+                </div>
+                <div class="field full">
+                    <label>Residential Address</label>
+                    <textarea name="address" placeholder="Enter the student's current address"></textarea>
+                </div>
+            </div>
+
+            {% if is_central_admin %}
+            <h2 class="section-title" style="margin-top:32px">03. Campus Assignment</h2>
+            <div class="grid">
+                <div class="field">
+                    <label>Campus <span class="required">*</span></label>
+                    <select name="campus_id" required>
+                        <option value="">Select campus</option>
+                        {% for campus in campuses %}
+                        <option value="{{ campus.id }}">{{ campus.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            {% endif %}
+
+            <h2 class="section-title" style="margin-top:32px">03. Academic Information</h2>
+            <div class="grid">
+                <div class="field">
+                    <label>Programme <span class="required">*</span></label>
+                    <input type="text" name="programme" placeholder="Enter programme of study" required>
+                </div>
+                <div class="field">
+                    <label>Year of Study <span class="required">*</span></label>
+                    <select name="year_of_study" required>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                        <option value="5">Year 5</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="note">
+                The system will generate the student's official admission number automatically after successful registration. Please provide an active email address for future institutional communication.
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'dashboard:administrator' %}">
+                    <button class="cancel" type="button">Cancel</button>
+                </a>
+                <button class="submit" type="submit">Create Student Record →</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

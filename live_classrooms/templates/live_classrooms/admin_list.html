@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Live Classrooms | Fastline</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fa; color: #24334b; }
+        header { background: #10213e; color: white; padding: 24px 6%; }
+        header h1 { margin: 0 0 7px; font-size: 23px; }
+        header p { margin: 0; color: #d9ad50; }
+        main { max-width: 1200px; margin: 32px auto; padding: 0 20px; }
+        .top { display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
+        .top h2 { margin: 0 0 6px; color: #10213e; }
+        .top p { margin: 0; color: #64748b; }
+        .btn { display: inline-block; background: #d9ad50; color: #10213e; padding: 12px 17px; border-radius: 7px; text-decoration: none; font-weight: bold; border: 0; cursor: pointer; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat { background: white; border-radius: 10px; padding: 19px; border-left: 4px solid #d9ad50; }
+        .stat span { color: #64748b; font-size: 14px; }
+        .stat strong { display: block; color: #10213e; font-size: 27px; margin-top: 7px; }
+        .table-wrap { background: white; border-radius: 11px; overflow-x: auto; box-shadow: 0 3px 12px rgba(0,0,0,.04); }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e8edf3; font-size: 14px; }
+        th { background: #10213e; color: white; }
+        td { vertical-align: middle; }
+        .status { display: inline-block; padding: 6px 9px; border-radius: 20px; background: #edf2f7; color: #334155; font-size: 12px; }
+        .status.cancelled { background: #fee2e2; color: #991b1b; }
+        .status.completed { background: #dcfce7; color: #166534; }
+        .action { color: #10213e; font-weight: bold; text-decoration: none; margin-right: 10px; }
+        .cancel { display: inline; }
+        .cancel button { border: 0; background: none; color: #b42318; cursor: pointer; font-weight: bold; }
+        .empty { padding: 35px; text-align: center; color: #64748b; }
+        footer { text-align: center; color: #8290a3; padding: 25px; font-size: 13px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>FASTLINE INSTITUTE OF HIGHER EDUCATION</h1>
+    <p>Learning Without Boundaries.</p>
+</header>
+<main>
+    <div class="top">
+        <div>
+            <h2>Live Classrooms</h2>
+            <p>Schedule and manage online lessons using Zoom.</p>
+        </div>
+        <a class="btn" href="{% url 'live_classrooms:create' %}">+ Schedule Classroom</a>
+    </div>
+
+    <div class="summary">
+        <div class="stat"><span>Scheduled</span><strong>{{ scheduled_count }}</strong></div>
+        <div class="stat"><span>Completed</span><strong>{{ completed_count }}</strong></div>
+        <div class="stat"><span>Cancelled</span><strong>{{ cancelled_count }}</strong></div>
+    </div>
+
+    <div class="table-wrap">
+        {% if classrooms %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Classroom</th>
+                    <th>Course</th>
+                    <th>Lecturer</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for classroom in classrooms %}
+                <tr>
+                    <td><strong>{{ classroom.title }}</strong></td>
+                    <td>{{ classroom.course.course_code }} - {{ classroom.course.course_title }}</td>
+                    <td>{{ classroom.lecturer.get_full_name|default:classroom.lecturer.username }}</td>
+                    <td>{{ classroom.start_time|date:"d M Y, H:i" }}</td>
+                    <td>{{ classroom.end_time|date:"d M Y, H:i" }}</td>
+                    <td><span class="status {{ classroom.status|lower }}">{{ classroom.get_status_display }}</span></td>
+                    <td>
+                        <a class="action" href="{% url 'live_classrooms:edit' classroom.id %}">Edit</a>
+                        {% if classroom.status == "SCHEDULED" %}
+                        <a class="action" href="{{ classroom.zoom_link }}" target="_blank" rel="noopener">Open Zoom</a>
+                        <form class="cancel" method="post" action="{% url 'live_classrooms:cancel' classroom.id %}" onsubmit="return confirm('Cancel this classroom?');">
+                            {% csrf_token %}
+                            <button type="submit">Cancel</button>
+                        </form>
+                        {% endif %}
+                        <a class="action" href="{% url 'live_classrooms:delete' classroom.id %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty">
+            <h3>No live classrooms scheduled yet.</h3>
+            <p>Create your first classroom and add its Zoom meeting link.</p>
+        </div>
+        {% endif %}
+    </div>
+</main>
+<footer>Fastline Institute of Higher Education · Learning Without Boundaries.</footer>
+</body>
+</html>
+

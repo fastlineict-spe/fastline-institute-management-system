@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lecturer Management | Fastline Institute</title>
+<style>
+body{margin:0;background:#f3f6fb;font-family:Arial,sans-serif;color:#18243b}
+header{background:#101d38;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+header a{color:#f5c65c;text-decoration:none}
+main{max-width:1250px;margin:32px auto;padding:0 20px}
+h1{margin-top:0}
+.stats{display:flex;gap:15px;flex-wrap:wrap}
+.stat,.panel{background:white;border-radius:12px;padding:20px;box-shadow:0 3px 14px #14213b12;margin-bottom:20px}
+.stat strong{display:block;font-size:26px;color:#bd8c22;margin-top:7px}
+input{padding:11px;border:1px solid #ccd4e1;border-radius:7px;max-width:100%;box-sizing:border-box}
+button,.btn{background:#172747;color:white;border:0;border-radius:7px;padding:10px 15px;text-decoration:none;cursor:pointer;display:inline-block}
+.gold{background:#bd8c22}.danger{background:#a83232}.muted{background:#64748b}
+table{width:100%;border-collapse:collapse;background:white}
+th,td{text-align:left;padding:13px;border-bottom:1px solid #e7ebf1}
+th{color:#53627b;background:#f8f9fc}
+.actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.badge{padding:5px 9px;border-radius:20px;background:#e4f5e9;color:#176b35}
+.inactive{background:#fce8e8;color:#a83232}
+.messages{padding:12px;background:#fff2d7;border-radius:8px;margin:12px 0}
+@media(max-width:700px){.panel{overflow-x:auto}table{min-width:850px}}
+</style>
+</head>
+<body>
+<header>
+<strong>FASTLINE INSTITUTE OF HIGHER EDUCATION | LECTURER MANAGEMENT</strong>
+<a href="{% url 'dashboard:administrator' %}">&lt;- Administrator Dashboard</a>
+</header>
+<main>
+<h1>Lecturer Management</h1>
+<p>Register, search and manage lecturer accounts within your authorised campus.</p>
+
+{% for message in messages %}<div class="messages">{{ message }}</div>{% endfor %}
+
+<div class="stats">
+<div class="stat">Total Lecturers<strong>{{ total_lecturers }}</strong></div>
+<div class="stat">Active Lecturers<strong>{{ active_lecturers }}</strong></div>
+</div>
+
+<div class="panel">
+<a class="btn gold" href="{% url 'lecturers:create' %}">+ Register Lecturer</a>
+<form method="get" style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
+<input name="q" value="{{ query }}" placeholder="Search name, username, email, phone or campus" style="flex:1;min-width:220px">
+<button type="submit">Search</button>
+<a class="btn muted" href="{% url 'lecturers:list' %}">Clear</a>
+</form>
+</div>
+
+<div class="panel">
+<h2>Registered Lecturers</h2>
+<table>
+<thead>
+<tr>
+<th>Lecturer</th>
+<th>Username</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Campus</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for lecturer in lecturers %}
+<tr>
+<td>{{ lecturer.first_name }} {{ lecturer.last_name }}</td>
+<td>{{ lecturer.username }}</td>
+<td>{{ lecturer.email }}</td>
+<td>{{ lecturer.phone_number|default:"-" }}</td>
+<td>{% if lecturer.campus %}{{ lecturer.campus.name }}{% else %}Not assigned{% endif %}</td>
+<td>{% if lecturer.is_active %}<span class="badge">Active</span>{% else %}<span class="badge inactive">Inactive</span>{% endif %}</td>
+<td>
+<div class="actions">
+<a class="btn" href="{% url 'lecturers:edit' lecturer.id %}">Edit</a>
+<form method="post" action="{% url 'lecturers:toggle' lecturer.id %}">
+{% csrf_token %}
+<button class="muted" type="submit">{% if lecturer.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+</form>
+<a class="btn danger" href="{% url 'lecturers:delete' lecturer.id %}">Delete</a>
+</div>
+</td>
+</tr>
+{% empty %}
+<tr><td colspan="7">No lecturers found for this search or campus.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</main>
+</body>
+</html>

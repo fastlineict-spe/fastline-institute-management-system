@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>FIMS - Record Student Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{font-family:Arial,sans-serif;background:#f2f5fa;margin:0;padding:25px;color:#17243b}
+        .panel{max-width:850px;margin:auto;background:white;padding:25px;border-radius:12px;box-shadow:0 4px 18px #0001}
+        h2{color:#12358b}
+        label{display:block;margin-top:17px;font-weight:bold}
+        input,select{width:100%;padding:12px;margin-top:7px;border:1px solid #ccd4e0;border-radius:6px;box-sizing:border-box}
+        button{margin-top:22px;padding:13px 22px;background:#12358b;color:white;border:0;border-radius:6px;cursor:pointer}
+        .notice{background:#fff4d6;padding:12px;border-radius:6px;margin:12px 0}
+        .success{background:#e5f7e9;padding:12px;border-radius:6px;margin:12px 0}
+        .student-count{color:#52627a;font-size:14px}
+    </style>
+</head>
+<body>
+<div class="panel">
+    <h2>FASTLINE INSTITUTE OF HIGHER EDUCATION</h2>
+    <p><strong>I SHALL RISE &amp; SHINE</strong></p>
+    <h3>Record Student Payment</h3>
+
+    {% for message in messages %}
+        <div class="{% if message.tags == 'success' %}success{% else %}notice{% endif %}">{{ message }}</div>
+    {% endfor %}
+
+    <p><strong>Campus:</strong> {{ campus.name }}</p>
+    <p class="student-count">Active students available: {{ student_rows|length }}</p>
+
+    {% if central %}
+    <form method="get">
+        <label>Campus</label>
+        <select name="campus" onchange="this.form.submit()">
+            {% for c in campuses %}
+            <option value="{{ c.id }}" {% if c.id == campus.id %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% if central %}
+        <input type="hidden" name="campus" value="{{ campus.id }}">
+        {% endif %}
+
+        <label>Student — Admission Number</label>
+        <select name="student" required>
+            <option value="">Select student</option>
+            {% for row in student_rows %}
+            <option value="{{ row.student.id }}">
+                {{ row.student.registration_number }} — {{ row.student.user.get_full_name }}
+                | Outstanding: UGX {{ row.balance|floatformat:2 }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>Amount Received (UGX)</label>
+        <input type="number" name="amount" min="1" step="0.01" required>
+
+        <label>Payment Method</label>
+        <select name="method" required>
+            <option value="">Select method</option>
+            <option value="CASH">Cash</option>
+            <option value="MTN_MOMO">MTN Mobile Money</option>
+            <option value="AIRTEL_MONEY">Airtel Money</option>
+            <option value="BANK">Bank</option>
+        </select>
+
+        <label>Transaction Reference (if applicable)</label>
+        <input type="text" name="transaction_reference">
+
+        <button type="submit">Record Payment</button>
+    </form>
+
+    {% if not student_rows %}
+    <div class="notice">No active students are available for this campus.</div>
+    {% else %}
+    <div class="notice">
+        Students without assigned fees are displayed with a zero balance. Assign fees before recording their payments.
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
